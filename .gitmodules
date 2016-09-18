@@ -1,0 +1,12 @@
+[submodule "backend/deps/json"]
+	path = backend/deps/json
+	url = https://github.com/nlohmann/json
+[submodule "backend/deps/hiredis"]
+	path = backend/deps/hiredis
+	url = https://github.com/redis/hiredis
+[submodule "backend/deps/uWebSockets"]
+	path = backend/deps/uWebSockets
+	url = https://github.com/uWebSockets/uWebSockets
+[submodule "backend/deps/capnproto"]
+	path = backend/deps/capnproto
+	url = https://github.com/sandstorm-io/capnproto

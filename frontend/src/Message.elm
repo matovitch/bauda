@@ -5,7 +5,7 @@ type Message =
     GotoSignIn             |
     Username        String |
     Password        String |
-    ReEnterPassword String |
+    Password2       String |
     Email           String |
     RunLogIn               |
     RunSignIn              |

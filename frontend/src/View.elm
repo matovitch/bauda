@@ -45,7 +45,7 @@ inputsToMsg input =
         [
             Msg.Username, 
             Msg.Password,
-            Msg.ReEnterPassword,
+            Msg.Password2,
             Msg.Email
         ]
 

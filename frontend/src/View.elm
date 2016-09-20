@@ -102,7 +102,7 @@ view model =
         (
             H.pre [] [H.text model.websocketReply] ::
             logInSignIn ::
-            case model.logInOrSignIn of
+            case model.state of
                 Mdl.LogIn  -> logInInputs  :: runButton Msg.RunLogIn  "Log In !"
                 Mdl.SignIn -> signInInputs :: runButton Msg.RunSignIn "Sign In !"
         )

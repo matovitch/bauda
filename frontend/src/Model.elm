@@ -7,16 +7,16 @@ import Config      as Cfg
 import Maybe
 import Dict
 
-type LogInOrSignIn = LogIn | SignIn
+type State = LogIn | SignIn
 
 type alias Model =
     {
-        logInOrSignIn   : LogInOrSignIn,
-        username        : String,
-        password        : String,
-        reEnterPassword : String,
-        email           : String,
-        websocketReply  : String
+        state          : State,
+        username       : String,
+        password       : String,
+        password2      : String,
+        email          : String,
+        websocketReply : String
     }
 
 default = Model LogIn "" "" "" "" ""
@@ -37,16 +37,16 @@ toJson model =
     JsE.object
         [   
             (
-                "LogInOrSignIn",
-                case model.logInOrSignIn of
+                "state",
+                case model.state of
                     LogIn  -> JsE.string "Log In"
                     SignIn -> JsE.string "Sign In"
             ),
-            ("username"         , JsE.string model.username        ),
-            ("password"         , JsE.string model.password        ),
-            ("reEnterPassword"  , JsE.string model.reEnterPassword ),
-            ("email"            , JsE.string model.email           ),
-            ("websocketReply"   , JsE.string model.websocketReply  )
+            ("username"         , JsE.string model.username      ),
+            ("password"         , JsE.string model.password      ),
+            ("reEnterPassword"  , JsE.string model.password2     ),
+            ("email"            , JsE.string model.email         ),
+            ("websocketReply"   , JsE.string model.websocketReply)
         ]
 
 
@@ -62,13 +62,13 @@ fromJson json =
                 in
                     Model
                         (
-                            case (decodeString "LogInOrSignIn") of
+                            case (decodeString "state") of
                                 "Sign In" -> SignIn
                                 _ -> LogIn
                         )
                         (decodeString "username")
                         (decodeString "password")
-                        (decodeString "reEnterPassword")
+                        (decodeString "password2")
                         (decodeString "email")
                         (decodeString "websocketReply")
             _ -> 

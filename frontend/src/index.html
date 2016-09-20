@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>
+            Bauda
+        </title>
+        <script type="text/javascript" src="elm.js"/>
+        <link rel="stylesheet" href="style.css"/>
+    </head>
+
+    <body/>
+
+    <script type="text/javascript">
+
+        var storedState = localStorage.getItem('bauda-model-save');
+        var startingState = storedState ? JSON.parse(storedState) : null;
+
+        var bauda = Elm.Bauda.fullscreen(startingState);
+
+        bauda.ports.setStorage.subscribe
+        (
+            function(state) 
+            {
+                localStorage.setItem('bauda-model-save', JSON.stringify(state));
+            }
+        );
+
+    </script>
+</html>

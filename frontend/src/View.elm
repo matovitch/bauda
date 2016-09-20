@@ -14,7 +14,7 @@ logInInputTexts  = ["Username", "Password"]
 logInInputTypes  = ["text"    , "password"]
 signInInputTexts = logInInputTexts ++ ["Re-enter Password", "Email"]
 signInInputTypes = logInInputTypes ++ ["password"         , "text"]
-allInputTexts    = logInInputTexts
+allInputTexts    = signInInputTexts
 
 toMsg : String -> List String -> a -> List a -> a
 toMsg key keys msg msgs =
@@ -100,7 +100,7 @@ view model =
     H.div 
         []
         (
-            H.text model.websocketReply ::
+            H.pre [] [H.text model.websocketReply] ::
             logInSignIn ::
             case model.logInOrSignIn of
                 Mdl.LogIn  -> logInInputs  :: runButton Msg.RunLogIn  "Log In !"

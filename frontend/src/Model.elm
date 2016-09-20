@@ -42,11 +42,11 @@ toJson model =
                     LogIn  -> JsE.string "Log In"
                     SignIn -> JsE.string "Sign In"
             ),
-            ("username"         , JsE.string model.username      ),
-            ("password"         , JsE.string model.password      ),
-            ("reEnterPassword"  , JsE.string model.password2     ),
-            ("email"            , JsE.string model.email         ),
-            ("websocketReply"   , JsE.string model.websocketReply)
+            ("username"      , JsE.string model.username      ),
+            ("password"      , JsE.string model.password      ),
+            ("password2"     , JsE.string model.password2     ),
+            ("email"         , JsE.string model.email         ),
+            ("websocketReply", JsE.string model.websocketReply)
         ]
 
 

@@ -1,8 +1,9 @@
 module Message exposing (..)
 
+import Path exposing (Path)
+
 type Message = 
-    GotoLogIn              |
-    GotoSignIn             |
+    ToPath          Path   |
     Username        String |
     Password        String |
     Password2       String |
@@ -11,4 +12,3 @@ type Message =
     RunSignIn              |
     WebsocketReply  String |
     Nothing
-    

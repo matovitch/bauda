@@ -1,78 +1,123 @@
 port module Model exposing (..)
 
+import Message     as Msg exposing (Message)
 import Json.Decode as JsD exposing ((:=))
+import Path        as Pth exposing (Path)
 import Json.Encode as JsE
-import Message     as Msg
 import Config      as Cfg
-import Maybe
-import Dict
+import Maybe       as Myb
+import Dict        as Dct
 
-type State = LogIn | SignIn
+
+{- SECRET -}
+
+type alias Secret = 
+    {
+        password  : String,
+        password2 : String
+    }
+
+type ReleaseMode = Public | Private
+
+
+{- MODEL -}
 
 type alias Model =
     {
-        state          : State,
+        path           : Path,
         username       : String,
-        password       : String,
-        password2      : String,
         email          : String,
-        websocketReply : String
+        websocketReply : String,
+        secret         : Secret
     }
 
-default = Model LogIn "" "" "" "" ""
+default = 
+    {
+        path           = Pth.LogIn,
+        username       = "",
+        email          = "",
+        websocketReply = "",
+        secret         =
+            {
+                password  = "",
+                password2 = ""
+            } 
+    }
 
-init : Maybe JsD.Value -> (Model, Cmd Msg.Message)
-init flag = 
-    (
-        case flag of 
-            Just json ->
-                fromJson json
-            Nothing ->
-                default,
-        Cmd.none
-    )
 
-toJson : Model -> JsE.Value
-toJson model =
+{- LOCAL STORAGE -}
+
+port setStorage : JsD.Value -> Cmd msg
+
+store : (Model, Cmd Message) -> (Model, Cmd Message)
+store (model, cmd) = 
+    (model, Cmd.batch [setStorage (toJson Public model), cmd])
+
+init : Maybe JsD.Value -> Path -> (Model, Cmd Message)
+init flag path = 
+    case flag of 
+        Just json ->
+            (fromJson json, Pth.navigateTo path)
+        Nothing ->
+            (default, Pth.navigateTo path)
+
+
+{- JSON ENCODING / DECODING -}
+
+toJson : ReleaseMode -> Model -> JsE.Value
+toJson releaseMode model =
     JsE.object
         [   
-            (
-                "state",
-                case model.state of
-                    LogIn  -> JsE.string "Log In"
-                    SignIn -> JsE.string "Sign In"
-            ),
-            ("username"      , JsE.string model.username      ),
-            ("password"      , JsE.string model.password      ),
-            ("password2"     , JsE.string model.password2     ),
-            ("email"         , JsE.string model.email         ),
-            ("websocketReply", JsE.string model.websocketReply)
+            ("path"         , JsE.string (Pth.toString model.path)),
+            ("username"      , JsE.string model.username             ),
+            ("email"         , JsE.string model.email                ),
+            ("websocketReply", JsE.string model.websocketReply       ),
+            ("secret"        , secretToJson releaseMode model.secret )
         ]
+
+secretToJson : ReleaseMode -> Secret -> JsE.Value
+secretToJson releaseMode secret =
+    case releaseMode of
+        Private ->
+            JsE.object
+                [
+                    ("password" , JsE.string secret.password ),
+                    ("password2", JsE.string secret.password2)
+                ]
+        Public ->
+            JsE.object []
 
 
 fromJson : JsD.Value -> Model
 fromJson json =
     let
-        decodedJson = JsD.decodeValue (JsD.dict JsD.string) json
+        decoder =
+            JsD.object2 (,)
+                (JsD.dict (JsD.maybe JsD.string))
+                ("secret" := (JsD.dict JsD.string))
+
+        decodedJson = JsD.decodeValue decoder json
     in
         case decodedJson of
             Ok modelAsTuple ->
                 let
-                    decodeString = \s -> modelAsTuple |> Dict.get s |> Maybe.withDefault ""
+                    decodeFst = \s -> fst modelAsTuple |> Dct.get s 
+                                                       |> Myb.withDefault Nothing 
+                                                       |> Myb.withDefault ""
+                    decodeSnd = \s -> snd modelAsTuple |> Dct.get s 
+                                                       |> Myb.withDefault "" 
                 in
                     Model
+                        (Pth.fromString (decodeFst "path"))
+                        (decodeFst "username")
+                        (decodeFst "email")
+                        (decodeFst "websocketReply")
                         (
-                            case (decodeString "state") of
-                                "Sign In" -> SignIn
-                                _ -> LogIn
+                            Secret
+                                (decodeSnd "password")
+                                (decodeSnd "password2")
                         )
-                        (decodeString "username")
-                        (decodeString "password")
-                        (decodeString "password2")
-                        (decodeString "email")
-                        (decodeString "websocketReply")
-            _ -> 
-                default
+            Err error -> default
 
 
 toJsonWithAction : String -> Model -> String
@@ -80,12 +125,6 @@ toJsonWithAction action model =
     JsE.object 
         [
             ("action", JsE.string action),
-            ("model", toJson model)
+            ("model", toJson Private model)
         ]
     |> JsE.encode Cfg.jsonIndent
-
-port setStorage : JsD.Value -> Cmd msg
-
-store : (Model, Cmd Msg.Message) -> (Model, Cmd Msg.Message)
-store (model, cmd) = 
-    (model, Cmd.batch [setStorage (toJson model), cmd])

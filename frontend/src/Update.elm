@@ -1,25 +1,40 @@
-module Update exposing (update)
+module Update exposing (update, urlUpdate)
 
-import WebSocket as WSk
-import Message   as Msg
-import Model     as Mdl
-import Config    as Cfg
+import Message     as Msg exposing (Message)
+import Model       as Mdl exposing (Model)
+import Maybe       as Myb exposing (Maybe)
+import Path        as Pth exposing (Path)
+import Json.Decode as JsD
+import WebSocket   as WSk
+import Config      as Cfg
 
-update : Msg.Message -> Mdl.Model -> (Mdl.Model, Cmd Msg.Message)
+
+update : Message -> Model -> (Model, Cmd Message)
 update msg model = 
     let
         requestAction = \action ->  WSk.send Cfg.websocketServer (Mdl.toJsonWithAction action model)
-        updated =
-            case msg of
-                Msg.GotoLogIn            -> ({ model | state     = Mdl.LogIn }, Cmd.none              )
-                Msg.GotoSignIn           -> ({ model | state     = Mdl.SignIn}, Cmd.none              )
-                Msg.Username        text -> ({ model | username       = text }, Cmd.none              )
-                Msg.Password        text -> ({ model | password       = text }, Cmd.none              )
-                Msg.Password2       text -> ({ model | password2      = text }, Cmd.none              )
-                Msg.Email           text -> ({ model | email          = text }, Cmd.none              )
-                Msg.WebsocketReply  text -> ({ model | websocketReply = text }, Cmd.none              )
-                Msg.RunLogIn             -> (  model                          , requestAction  "login")
-                Msg.RunSignIn            -> (  model                          , requestAction "signin")
-                _                        -> (  model                          , Cmd.none              )
+
+        {-Use intermediary expression because of https://github.com/elm-lang/elm-compiler/issues/537-}
+        secret = model.secret
     in
-        Mdl.store updated
+        case msg of
+            Msg.ToPath          path -> ( model                                             , Pth.navigateTo path   )
+            Msg.Username        text -> ({model | username                     = text      }, Cmd.none              )
+            Msg.Email           text -> ({model | email                        = text      }, Cmd.none              )
+            Msg.WebsocketReply  text -> ({model | websocketReply               = text      }, Cmd.none              )
+            Msg.Password        text -> ({model | secret = {secret | password  = text}     }, Cmd.none              )
+            Msg.Password2       text -> ({model | secret = {secret | password2 = text}     }, Cmd.none              )
+            Msg.RunLogIn             -> ( model                                             , requestAction  "login")
+            Msg.RunSignIn            -> ( model                                             , requestAction "signin")
+            _                        -> ( model                                             , Cmd.none              )
+
+urlUpdate : Path -> Model -> (Model, Cmd Message)
+urlUpdate path model =
+    let
+        model = {model | path = path}
+    in 
+        case path of
+            Pth.Home   -> (model, Cmd.none)
+            Pth.LogIn  -> (model, Cmd.none)
+            Pth.SignIn -> (model, Cmd.none)
+            _          -> (model, Cmd.none)

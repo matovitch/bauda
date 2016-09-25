@@ -39,8 +39,7 @@ get s =
     map |> Dct.get s |> Myb.withDefault []
 
 all =
-    map |> Dct.foldl (\_ -> (::)) []
-        |> List.concat
+    map |> Dct.foldl (\_ -> (++)) []
         |> Set.fromList
         |> Set.toList
 

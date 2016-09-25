@@ -5,5 +5,5 @@ import Skeleton as Skt exposing (..)
 import Html     as H
 
 view : Model -> HMsg
-view =
-    (\_ -> skeleton "Home" [H.text "Home !"])
+view model =
+    skeleton "Home" [H.text "Home !"]

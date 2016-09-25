@@ -34,8 +34,7 @@ get s =
 
 all =
     map |> Dct.map (\_ -> List.map fst)
-        |> Dct.foldl (\_ -> (::)) []
-        |> List.concat
+        |> Dct.foldl (\_ -> (++)) []
         |> Set.fromList
         |> Set.toList
 

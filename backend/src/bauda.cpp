@@ -1,5 +1,4 @@
 
-
 #include <boost/range/combine.hpp>
 #include <boost/foreach.hpp>
 #include <iostream>
@@ -26,7 +25,7 @@ int main(int argc, const char** argv)
     std::vector<std::unique_ptr<std::thread>> threads;
     std::vector<std::unique_ptr<uWS::Server>> workers;
 
-    const std::size_t nbOfThreads = confReader()["server_threads"];
+    const std::size_t nbOfThreads = confReader()["websockets"]["threads"];
 
     workers.reserve(nbOfThreads);
     threads.reserve(nbOfThreads);
@@ -64,9 +63,9 @@ int main(int argc, const char** argv)
                         worker = std::unique_ptr<uWS::Server>
                             (
                                 tes,
-                                confReader()["server_port"], 
-                                confReader()["server_options"], 
-                                confReader()["server_max_payload"]
+                                confReader()["websockets"]["port"], 
+                                confReader()["websockets"]["options"], 
+                                confReader()["websockets"]["max_payload"]
                             );
 
                         workers->onConnection

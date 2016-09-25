@@ -1,0 +1,9 @@
+{
+    "websockets":
+    {
+        "port"       :  3000,
+        "threads"    :     4,
+        "options"    :     0,
+        "max_payload": 10000
+    }
+}

@@ -14,27 +14,20 @@ import Set
 map =
     [
         (
-            "login", 
+            "LoginOrSignin", 
             [
                 "Log In",
                 "Sign In"
             ]
         ),
         (
-            "loginOk", 
+            "LoginOk", 
             [
                 "Log In !"
             ]
         ),
         (
-            "signin", 
-            [
-                "Log In",
-                "Sign In"
-            ]
-        ),
-        (
-            "signinOk", 
+            "SigninOk", 
             [
                 "Sign In !"
             ]

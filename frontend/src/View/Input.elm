@@ -13,19 +13,17 @@ import Set
 map =
     [
         (
-            "login", 
+            "Login", 
             [
                 ("Username", "text"    ), 
                 ("Password", "password")
             ]
         ),
         (
-            "signin", 
+            "SigninOnly", 
             [
-                ("Username"         , "text"    ), 
-                ("Password"         , "password"),
                 ("Re-enter Password", "password"),
-                ("email"            , "text"    )
+                ("Email"            , "text"    )
             ]
         )
     ] |> Dct.fromList
@@ -48,10 +46,10 @@ toMsg input =
         all
         (\s -> Msg.Nothing)
         [
-            Msg.Email, 
+            Msg.Email,
             Msg.Password,
             Msg.Password2,
-            Msg.Username   
+            Msg.Username
         ]
 
 listOf : String -> List (String, String) -> HMsg

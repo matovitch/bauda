@@ -1,8 +1,8 @@
 module View exposing (view)
 
-import Model           as Mdl exposing (Model)
-import Skeleton        as Skt exposing (HMsg)
-import Path            as Pth
+import Model         as Mdl exposing (Model)
+import Skeleton      as Skt exposing (HMsg)
+import Path          as Pth
 
 {-Views-}
 import View.NotFound as NotFound

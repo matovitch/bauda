@@ -9,7 +9,7 @@ view : Model -> HMsg
 view model =
     skeleton "Login"
         [
-            Btn.listOf "LoginButtons"  (Btn.get "login"  ),
-            Inp.listOf "LoginInputs"   (Inp.get "login"  ),
-            Btn.oneOf  "LoginOkButton" (Btn.get "loginOk")
+            Btn.listOf "LoginOrSigninButtons"  (Btn.get "LoginOrSignin"),
+            Inp.listOf "LoginInputs"           (Inp.get "Login"        ),
+            Btn.oneOf  "LoginOkButton"         (Btn.get "LoginOk"      )
         ]

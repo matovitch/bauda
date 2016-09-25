@@ -21,11 +21,11 @@ update msg model =
             Msg.ToPath          path -> ( model                                             , Pth.navigateTo path   )
             Msg.Username        text -> ({model | username                     = text      }, Cmd.none              )
             Msg.Email           text -> ({model | email                        = text      }, Cmd.none              )
-            Msg.WebsocketReply  text -> ({model | websocketReply               = text      }, Cmd.none              )
             Msg.Password        text -> ({model | secret = {secret | password  = text}     }, Cmd.none              )
             Msg.Password2       text -> ({model | secret = {secret | password2 = text}     }, Cmd.none              )
             Msg.RunLogIn             -> ( model                                             , requestAction  "login")
             Msg.RunSignIn            -> ( model                                             , requestAction "signin")
+            Msg.WebsocketReply  text -> ( model                                             , Cmd.none              )            
             _                        -> ( model                                             , Cmd.none              )
 
 urlUpdate : Path -> Model -> (Model, Cmd Message)

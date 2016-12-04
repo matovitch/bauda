@@ -108,28 +108,28 @@ type alias SimpleModel = {fst : Dict String String, snd : Secret}
 fromJson : JsD.Value -> Model
 fromJson json =
     let
-        decoder =
-            JsD.map2 SimpleModel
-                (JsD.dict JsD.string)
-                (JsD.at ["secret"] secretFromJson)
-
-        decodedJson = JsD.decodeValue decoder json
+        decoderRoot   = JsD.dict (JsD.maybe JsD.string)
+        decoderSecret = JsD.at ["secret"] secretFromJson
+        decodedRoot   = JsD.decodeValue decoderRoot   json
+        decodedSecret = JsD.decodeValue decoderSecret json
     in
-        case decodedJson of
-            Ok modelAsPair ->
+        case decodedRoot of
+            Ok root ->
                 let
-                    decodeFst = \s -> modelAsPair.fst |> Dct.get s 
-                                                      |> Myb.withDefault ""
+                    getRoot = \s -> root |> Dct.get s
+                                         |> Myb.withDefault Myb.Nothing
+                                         |> Myb.withDefault ""
                 in
-                    Model
-                        (Pth.fromString (decodeFst "path"))
-                        (decodeFst "username")
-                        (decodeFst "email")
-                        (decodeFst "server_reply")
-                        (
-                            modelAsPair.snd
-                        )
-            Err error -> default
+                    case decodedSecret of
+                        Ok secret ->
+                            Model
+                                (Pth.fromString (getRoot "path"))
+                                (getRoot "username")
+                                (getRoot "email")
+                                (getRoot "server_reply")
+                                secret
+                        _ -> default
+            _ -> default
 
 
 toJsonWithQuery : Query -> Model -> String

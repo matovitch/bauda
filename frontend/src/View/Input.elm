@@ -4,10 +4,11 @@ import Html.Attributes as HA
 import Html.Events     as HE
 import Html            as H
 
-import Message  as Msg exposing (Message)
-import Skeleton as Skt exposing (HMsg)
-import Maybe    as Myb
-import Dict     as Dct
+import Message       as Msg exposing (Message)
+import View.Skeleton as Skl
+import Tuple         as Tpl
+import Maybe         as Myb
+import Dict          as Dct
 import Set
 
 map =
@@ -33,14 +34,14 @@ get s =
     map |> Dct.get s |> Myb.withDefault []
 
 all =
-    map |> Dct.map (\_ -> List.map fst)
+    map |> Dct.map (\_ -> List.map Tpl.first)
         |> Dct.foldl (\_ -> (++)) []
         |> Set.fromList
         |> Set.toList
 
 toMsg : String -> String -> Message
 toMsg input =
-    Skt.toMsg
+    Skl.toMsg
         input
         all
         (\s -> Msg.Nothing)
@@ -51,22 +52,22 @@ toMsg input =
             Msg.Username
         ]
 
-listOf : String -> List (String, String) -> HMsg
+listOf : String -> List (String, String) -> Skl.HMsg
 listOf name items =
     List.map 
         (
             \x->( 
                     [
-                        HA.id ("input" ++ (Skt.classify (fst x))),
-                        HA.title (fst x),
-                        HA.type' (snd x), 
-                        HA.placeholder (fst x), 
-                        HE.onInput (toMsg (fst x))
+                        HA.id ("input" ++ (Skl.classify (Tpl.first x))),
+                        HA.title (Tpl.first x),
+                        HA.type_ (Tpl.second x), 
+                        HA.placeholder (Tpl.first x), 
+                        HE.onInput (toMsg (Tpl.first x))
                     ], 
                     []
                 )
         )
         items
-    |> Skt.hList H.form [HA.class name] H.input
+    |> Skl.hList H.form [HA.class name] H.input
 
 oneOf = listOf

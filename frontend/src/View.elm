@@ -1,16 +1,14 @@
 module View exposing (view)
 
 import Model         as Mdl exposing (Model)
-import Skeleton      as Skt exposing (HMsg)
-import Path          as Pth
-
-{-Views-}
 import View.NotFound as NotFound
 import View.Signin   as Signin
 import View.Login    as Login
 import View.Home     as Home
+import View.Skeleton as Skt
+import Path          as Pth
 
-view : Model -> HMsg
+view : Model -> Skt.HMsg
 view model =
     case model.path of
         Pth.Home   ->     Home.view model

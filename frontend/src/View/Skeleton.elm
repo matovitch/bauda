@@ -1,4 +1,4 @@
-module Skeleton exposing (..)
+module View.Skeleton exposing (..)
 
 import Message         as Msg exposing (Message)
 import Html.Attributes as HA

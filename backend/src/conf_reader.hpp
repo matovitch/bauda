@@ -1,27 +1,26 @@
 #ifndef __CONF_READER_H__
 #define __CONF_READER_H__
 
-#include <boost/file_system.hpp>
-#include <json.hpp>
+#include <boost/filesystem.hpp>
 #include <fstream>
 #include <chrono>
 
-using json = nlohmann::json;
+#include "../deps/json/src/json.hpp"
 
 struct ConfReader
 {
     ConfReader(const char* pathAsConstCharPtr) :
         _path(pathAsConstCharPtr)
     {
-        operator();
+        operator()();
     }
 
-    json::json operator()
+    nlohmann::json operator()()
     {
         if (!boost::filesystem::exists         (_path) ||
             !boost::filesystem::is_regular_file(_path))
         {
-            throw std::runtime_error("Path to global configuration file is invalid.")
+            throw std::runtime_error("Path to global configuration file is invalid.");
         }
 
         std::chrono::system_clock::time_point lastWrite
@@ -39,15 +38,15 @@ struct ConfReader
             std::stringstream sstream;
             sstream << ifstream.rdbuf();
 
-            _conf = json::parse(sstream.str());
+            _conf = nlohmann::json::parse(sstream.str());
         }
 
         return _conf;
     }
 
-    static std::chrono::system_clock::time_point _lastUpdate;
-    static boost::filesystem::path        _path;
-    static json::json                     _conf;
+    std::chrono::system_clock::time_point _lastUpdate;
+    boost::filesystem::path               _path;
+    nlohmann::json                        _conf;
 };
 
 #endif

@@ -1,7 +1,7 @@
 module Path exposing (..)
 
-import Navigation as Nav
 import Route      as Rt exposing ((:=))
+import Navigation as Nav
 
 type Path =
     Home   |
@@ -24,7 +24,7 @@ sitemap =
         ]
 
 fromString : String -> Path
-fromString = Rt.match sitemap >> Maybe.withDefault NotFound
+fromString = Rt.match sitemap >> Maybe.withDefault LogIn
 
 toString : Path -> String
 toString path =
@@ -37,5 +37,5 @@ toString path =
 fromLocation : Nav.Location -> Path
 fromLocation = .pathname >> fromString
 
-navigateTo : Path -> Cmd msg
-navigateTo = toString >> Nav.newUrl
+goto : Path -> Cmd msg
+goto = toString >> Nav.newUrl

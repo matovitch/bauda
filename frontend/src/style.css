@@ -1,8 +1,8 @@
-/*.MainView
+.MainView
 {
-  margin:auto;
-  width:15em;
-  padding 20em;
+  margin: auto;
+  width: 15em;
+  padding: 20em;
   margin-top: 15em;
 }
 
@@ -15,8 +15,8 @@
 
 .LogInSignIn > button
 {
-  display:inline;
-  width:48%;
+  display: inline;
+  width: 48%;
   text-align: center;
   margin: 1%;
 }
@@ -56,5 +56,5 @@ button::-moz-focus-inner {
 
 button:hover
 {
-  background-color: #3e8e41;
-}*/
+  background-color: #3E8E41;
+}

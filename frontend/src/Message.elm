@@ -1,14 +1,20 @@
 module Message exposing (..)
 
-import Path exposing (Path)
+import Query      as Qry exposing (Query)
+import Path       as Pth exposing (Path)
+import Navigation as Nav
 
 type Message = 
-    ToPath          Path   |
+    GotoPath        Path   |
+    ChangePath      Path   |
     Username        String |
     Password        String |
     Password2       String |
     Email           String |
-    RunLogIn               |
-    RunSignIn              |
-    WebsocketReply  String |
+    ServerQuery     Query  |
+    ServerReply     String |
     Nothing
+
+fromPath : Nav.Location -> Message
+fromPath location =
+    ChangePath (Pth.fromLocation location)

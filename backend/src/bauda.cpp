@@ -1,6 +1,7 @@
 
 #include <boost/range/combine.hpp>
 #include <boost/foreach.hpp>
+#include <functional>
 #include <iostream>
 #include <memory>
 #include <thread>
@@ -8,12 +9,13 @@
 #include <vector>
 
 #include "conf_reader.hpp"
+#include "../deps/uWebSockets/src/uWS.h"
 
 int main(int argc, const char** argv)
 {
     if (argc != 2)
     {
-        std::cerr << "Wrong number of argument. (expecting 1)" << std::enld;
+        std::cerr << "Wrong number of argument. (expecting 1)" << std::endl;
         return 0;
     }
 
@@ -30,16 +32,16 @@ int main(int argc, const char** argv)
     workers.reserve(nbOfThreads);
     threads.reserve(nbOfThreads);
 
-    auto generator = std::default_random_engine(std::random_device()())
+    auto generator = std::default_random_engine(std::random_device()());
     std::uniform_int_distribution<std::size_t> distribution(0, workers.size() - 1);
 
-    server.onUpgrade
+    master.onUpgrade
     (
-        [&generator, &distribution](uv_os_fd_t fd,
-                                    const char* secKey, 
-                                    void* ssl, 
-                                    const char* extensions,
-                                    size_t extensionsLength) 
+        [&workers, &distribution, &generator](uv_os_fd_t fd,
+                                              const char* secKey, 
+                                              void* ssl, 
+                                              const char* extensions,
+                                              size_t extensionsLength)
         {
             workers[distribution(generator)]->upgrade(fd,
                                                       secKey,
@@ -52,49 +54,49 @@ int main(int argc, const char** argv)
     for (std::size_t i = 0; i < workers.size(); i++)
     {
         auto& worker = workers[0];
-        auto& thread = threads[0]
+        auto& thread = threads[0];
 
         thread = 
             std::make_unique<std::thread>
-                (
-                    []()
-                    {
-                        EventSystem tes(WORKER);
-                        worker = std::unique_ptr<uWS::Server>
-                            (
-                                tes,
-                                confReader()["websockets"]["port"], 
-                                confReader()["websockets"]["options"], 
-                                confReader()["websockets"]["max_payload"]
-                            );
-
-                        workers->onConnection
+            (
+                [&worker, &confReader]()
+                {
+                    uWS::EventSystem tes(uWS::WORKER);
+                    worker = std::make_unique<uWS::Server>
                         (
-                            [&connections](uWS::WebSocket socket)
-                            {
-                                std::cout << "[Connection] clients: " << ++connections << std::endl;
-                            }
+                            tes,
+                            confReader()["websockets"]["port"], 
+                            confReader()["websockets"]["options"], 
+                            confReader()["websockets"]["max_payload"]
                         );
 
-                        workers->onMessage
-                        (
-                            [](uWS::WebSocket socket, const char* message, size_t length, uWS::OpCode opCode)
-                            {
-                                std::cout << std::string(message).substr(0, length) << std::endl;
-                                socket.send(message, length, opCode);
-                            }
-                        );
+                    worker->onConnection
+                    (
+                        [](uWS::WebSocket socket)
+                        {
+                            std::cout << "[Connection] clients: " << std::endl;
+                        }
+                    );
 
-                        workers->onDisconnection
-                        (
-                            [&connections](uWS::WebSocket socket, int code, char *message, size_t length)
-                            {
-                                std::cout << "[Disconnection] clients: " << --connections << std::endl;
-                            }
-                        );
-                        tes.run();
-                    }
-                );
+                    worker->onMessage
+                    (
+                        [](uWS::WebSocket socket, const char* message, size_t length, uWS::OpCode opCode)
+                        {
+                            std::cout << std::string(message).substr(0, length) << std::endl;
+                            socket.send(message, length, opCode);
+                        }
+                    );
+
+                    worker->onDisconnection
+                    (
+                        [](uWS::WebSocket socket, int code, char *message, size_t length)
+                        {
+                            std::cout << "[Disconnection] clients: " << std::endl;
+                        }
+                    );
+                    tes.run();
+                }
+            );
     }
 
     es.run();

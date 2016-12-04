@@ -4,11 +4,12 @@ import Html.Attributes as HA
 import Html.Events     as HE
 import Html            as H
 
-import Message  as Msg exposing (Message)
-import Skeleton as Skt exposing (HMsg)
-import Maybe    as Myb
-import Dict     as Dct
-import Path     as Pth
+import Message       as Msg exposing (Message)
+import View.Skeleton as Skl
+import Query         as Qry
+import Maybe         as Myb
+import Dict          as Dct
+import Path          as Pth
 import Set
 
 map =
@@ -43,20 +44,20 @@ all =
         |> Set.fromList
         |> Set.toList
 
-toMsg : String -> Msg.Message
+toMsg : String -> Message
 toMsg button =
-    Skt.toMsg
+    Skl.toMsg
         button
         all
         Msg.Nothing
         [
-            Msg.ToPath Pth.LogIn, 
-            Msg.RunLogIn,
-            Msg.ToPath Pth.SignIn,
-            Msg.RunSignIn
+            Msg.GotoPath    Pth.LogIn, 
+            Msg.ServerQuery Qry.LogIn,
+            Msg.GotoPath    Pth.SignIn,
+            Msg.ServerQuery Qry.SignIn
         ]
 
-listOf: String -> List String -> HMsg
+listOf: String -> List String -> Skl.HMsg
 listOf name list =
     List.map 
         (
@@ -65,7 +66,7 @@ listOf name list =
                     [
                         HA.title x, 
                         HE.onClick (toMsg x),
-                        HA.id ("button" ++ (Skt.classify x))
+                        HA.id ("button" ++ (Skl.classify x))
                     ],
                     [
                         H.text x
@@ -73,6 +74,6 @@ listOf name list =
                 )
         )
         list
-    |> Skt.hList H.div [HA.class name] H.button
+    |> Skl.hList H.div [HA.class name] H.button
 
 oneOf = listOf

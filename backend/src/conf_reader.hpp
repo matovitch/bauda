@@ -5,7 +5,7 @@
 #include <fstream>
 #include <chrono>
 
-#include "../deps/json/src/json.hpp"
+#include "json.hpp"
 
 struct ConfReader
 {

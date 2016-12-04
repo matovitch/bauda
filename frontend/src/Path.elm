@@ -24,7 +24,7 @@ sitemap =
         ]
 
 fromString : String -> Path
-fromString = Rt.match sitemap >> Maybe.withDefault LogIn
+fromString = Rt.match sitemap >> Maybe.withDefault NotFound
 
 toString : Path -> String
 toString path =

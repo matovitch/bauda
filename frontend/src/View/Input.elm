@@ -1,4 +1,4 @@
-module View.Input exposing (..)
+module View.Input exposing (get, listOf)
 
 import Html.Attributes as HA
 import Html.Events     as HE
@@ -69,5 +69,3 @@ listOf name items =
         )
         items
     |> Skl.hList H.form [HA.class name] H.input
-
-oneOf = listOf

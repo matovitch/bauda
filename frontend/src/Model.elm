@@ -1,17 +1,18 @@
-port module Model exposing (..)
+port module Model exposing (Model, init, store, toJson, fromJson, buildQuery)
 
 import Message     as Msg exposing (Message)
 import Query       as Qry exposing (Query)
 import Path        as Pth exposing (Path)
 import Dict        as Dct exposing (Dict)
-import Navigation  as Nav
 import Json.Encode as JsE
 import Json.Decode as JsD
+import Navigation  as Nav
+import WebSocket   as WSk
 import Config      as Cfg
 import Maybe       as Myb
 
 
-{- SECRET -}
+{- TYPES AND CONSTANTS -}
 
 type alias Secret = 
     {
@@ -20,9 +21,6 @@ type alias Secret =
     }
 
 type ReleaseMode = Public | Private
-
-
-{- MODEL -}
 
 type alias Model =
     {
@@ -46,7 +44,6 @@ default =
             } 
     }
 
-
 {- LOCAL STORAGE -}
 
 port setStorage : JsD.Value -> Cmd msg
@@ -54,6 +51,8 @@ port setStorage : JsD.Value -> Cmd msg
 store : (Model, Cmd Message) -> (Model, Cmd Message)
 store (model, cmd) = 
     (model, Cmd.batch [setStorage (toJson Public model), cmd])
+
+{- INIT -}
 
 changePath : Path -> Model -> (Model, Cmd Message)
 changePath path model =
@@ -66,7 +65,6 @@ init flag location =
             changePath (Pth.fromLocation location) (fromJson json)
         Nothing ->
             changePath (Pth.fromLocation location) default
-
 
 {- JSON ENCODING / DECODING -}
 
@@ -99,11 +97,9 @@ toJson releaseMode model =
                 ("path"          , JsE.string (Pth.toString model.path)),
                 ("username"      , JsE.string model.username           ),
                 ("email"         , JsE.string model.email              ),
-                ("server_reply", JsE.string model.server_reply     ),
+                ("server_reply", JsE.string model.server_reply         ),
                 ("secret"        , secret                              )
             ]
-
-type alias SimpleModel = {fst : Dict String String, snd : Secret}
 
 fromJson : JsD.Value -> Model
 fromJson json =
@@ -131,9 +127,8 @@ fromJson json =
                         _ -> default
             _ -> default
 
-
-toJsonWithQuery : Query -> Model -> String
-toJsonWithQuery query model =
+buildQuery : Model -> Query -> String
+buildQuery model query =
     JsE.object 
         [
             ("server_query", query |> Qry.toString 

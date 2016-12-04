@@ -1,4 +1,4 @@
-module View.Button exposing (..)
+module View.Button exposing (get, listOf)
 
 import Html.Attributes as HA
 import Html.Events     as HE
@@ -75,5 +75,3 @@ listOf name list =
         )
         list
     |> Skl.hList H.div [HA.class name] H.button
-
-oneOf = listOf

@@ -9,7 +9,7 @@
 #include <vector>
 
 #include "conf_reader.hpp"
-#include "../deps/uWebSockets/src/uWS.h"
+#include "uWS.h"
 
 int main(int argc, const char** argv)
 {

@@ -2,15 +2,22 @@
 	path = backend/deps/json
     url = https://github.com/nlohmann/json
     ignore = dirty
-[submodule "backend/deps/hiredis"]
-	path = backend/deps/hiredis
-	url = https://github.com/redis/hiredis
-    ignore = dirty
 [submodule "backend/deps/uWebSockets"]
 	path = backend/deps/uWebSockets
 	url = https://github.com/uWebSockets/uWebSockets
     ignore = dirty
+[submodule "backend/deps/libscrypt"]
+	path = backend/deps/libscrypt
+	url = https://github.com/technion/libscrypt
+[submodule "backend/deps/--force"]
+	path = backend/deps/--force
+	url = https://github.com/sandstorm-io/capnproto
 [submodule "backend/deps/capnproto"]
 	path = backend/deps/capnproto
 	url = https://github.com/sandstorm-io/capnproto
-    ignore = dirty
+[submodule "backend/deps/spdlog"]
+	path = backend/deps/spdlog
+	url = https://github.com/gabime/spdlog
+[submodule "backend/deps/kingdb"]
+	path = backend/deps/kingdb
+	url = https://github.com/matovitch/kingdb

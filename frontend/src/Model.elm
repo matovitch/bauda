@@ -97,7 +97,7 @@ toJson releaseMode model =
                 ("path"          , JsE.string (Pth.toString model.path)),
                 ("username"      , JsE.string model.username           ),
                 ("email"         , JsE.string model.email              ),
-                ("server_reply", JsE.string model.server_reply         ),
+                ("server_reply"  , JsE.string model.server_reply       ),
                 ("secret"        , secret                              )
             ]
 

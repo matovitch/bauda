@@ -1,0 +1,25 @@
+ROOT = $(TUP_CWD)
+CC = clang++
+
+CFLAGS += -Wall
+CFLAGS += -pedantic
+CFLAGS += -std=c++14
+
+ifeq (@(TUP_DEBUG),y)
+CFLAGS += -g
+else
+CFLAGS += -O3
+endif
+
+CFLAGS += -I $(ROOT)
+
+LDFLAGS += -l uWS
+LDFLAGS += -l fmt
+LDFLAGS += -l uv
+LDFLAGS += -l z
+LDFLAGS += -l pthread
+LDFLAGS += -l boost_filesystem
+LDFLAGS += -l boost_system
+
+!cc = |> $(CC) -c %f -o %o $(CFLAGS) |> %B.o
+!ld = |> $(CC) %f -o %o $(LDFLAGS) |>

@@ -1,9 +1,21 @@
 {
+	"debug_mode"  : true,
+	"root_path"   : "/home/cbrugel/workspace/bauda/backend",
+
+	"log" :
+	{
+		"path"              : "/log/log.txt",
+		"main_logger"       : "MAIN",
+		"flush_delay_in_ms" : 1000,
+		"queue_size"        : 4096,
+		"loggers_lifespan"  : 600,
+		"clean_period"      : 10,
+		"json_indent"       : 4
+	},
+
     "websockets":
     {
-        "port"       :  3000,
-        "threads"    :     4,
-        "options"    :     0,
-        "max_payload": 10000
+        "port"         :  3000,
+        "workers_size" :     4
     }
 }

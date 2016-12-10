@@ -17,8 +17,8 @@ namespace uWS_utils
 
     auto pickDefaultGroup(TheadedHubs& threadedHubs)
     {
-    	static auto randomEngine = std::default_random_engine(std::random_device{}());
-	           auto distribution = std::uniform_int_distribution<uint64_t>(0, threadedHubs.size() - 1);
+        static auto randomEngine = std::default_random_engine(std::random_device{}());
+               auto distribution = std::uniform_int_distribution<uint64_t>(0, threadedHubs.size() - 1);
 
         return &(threadedHubs[distribution(randomEngine)].hub->getDefaultGroup<uWS::SERVER>());
     }

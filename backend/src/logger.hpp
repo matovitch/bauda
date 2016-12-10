@@ -8,56 +8,56 @@
 
 namespace logger
 {
-	enum Level
-	{
-		DEBUG,
-		INFO,
-		WARN,
-		ERROR,
-		CRITICAL
-	};
+    enum Level
+    {
+        DEBUG,
+        INFO,
+        WARN,
+        ERROR,
+        CRITICAL
+    };
 
-	void init();
+    void init();
 
-	void cleanRegister();
+    void cleanRegister();
 
-	std::shared_ptr<spdlog::logger> create(const std::string& name);
+    std::shared_ptr<spdlog::logger> create(const std::string& name);
 
-	std::shared_ptr<spdlog::logger> get(const std::string log);
+    std::shared_ptr<spdlog::logger> get(const std::string log);
 
-	const std::string dumpJson(const nlohmann::json& json);
+    const std::string dumpJson(const nlohmann::json& json);
 
-	template <typename... Args>
-	void write(std::shared_ptr<spdlog::logger> log, const Level level, const std::string& format, Args... args)
-	{
-		const auto fullFormatAsString = "<{}:{}> " + format;
-		const auto fullFormatAsCStr   = fullFormatAsString.c_str();
+    template <typename... Args>
+    void write(std::shared_ptr<spdlog::logger> log, const Level level, const std::string& format, Args... args)
+    {
+        const auto fullFormatAsString = "<{}:{}> " + format;
+        const auto fullFormatAsCStr   = fullFormatAsString.c_str();
 
-		if (level == Level::DEBUG)
-		{
-			log->debug(fullFormatAsCStr, args...);
-		}
-		else 
-		if (level == Level::INFO)
-		{			
-			log->info(fullFormatAsCStr, args...);
-		}
-		else 
-		if (level == Level::WARN)
-		{
-			log->warn(fullFormatAsCStr, args...);
-		}
-		else 
-		if (level == Level::ERROR)
-		{
-			log->error(fullFormatAsCStr, args...);
-		}
-		else 
-		if (level == Level::CRITICAL)
-		{
-			log->critical(fullFormatAsCStr, args...);
-		}
-	}
+        if (level == Level::DEBUG)
+        {
+            log->debug(fullFormatAsCStr, args...);
+        }
+        else 
+        if (level == Level::INFO)
+        {            
+            log->info(fullFormatAsCStr, args...);
+        }
+        else 
+        if (level == Level::WARN)
+        {
+            log->warn(fullFormatAsCStr, args...);
+        }
+        else 
+        if (level == Level::ERROR)
+        {
+            log->error(fullFormatAsCStr, args...);
+        }
+        else 
+        if (level == Level::CRITICAL)
+        {
+            log->critical(fullFormatAsCStr, args...);
+        }
+    }
 } // end logger namespace
 
 #pragma clang diagnostic push

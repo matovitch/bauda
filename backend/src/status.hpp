@@ -9,27 +9,27 @@ class Status
 
 public:
 
-	enum
-	{
-		OK,
-		KO_NOT_YET_IMPLEMENTED,
-		KO_NO_MODEL,
-		KO_NO_USERNAME,
-		KO_NO_SERVER_QUERY,
-		KO_UNKNOWN_SERVER_QUERY
-	};
+    enum
+    {
+        OK,
+        KO_NOT_YET_IMPLEMENTED,
+        KO_NO_MODEL,
+        KO_NO_USERNAME,
+        KO_NO_SERVER_QUERY,
+        KO_UNKNOWN_SERVER_QUERY
+    };
 
-	Status(uint32_t code);
+    Status(uint32_t code);
 
-	const std::string& getDescription() const;
+    const std::string& getDescription() const;
 
-	uint32_t getCode() const;
+    uint32_t getCode() const;
 
 private:
 
-	static const std::unordered_map<uint32_t, const std::string> _DESCRIPTIONS;
+    static const std::unordered_map<uint32_t, const std::string> _DESCRIPTIONS;
 
-	uint32_t _code;
+    uint32_t _code;
 };
 
 #endif // end __STATUS_H__

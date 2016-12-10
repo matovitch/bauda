@@ -20,4 +20,4 @@ const nlohmann::json buildSigninReply(const nlohmann::json& model);
 
 } // end reply namespace
 
-#endif	// end __REPLY_H__
+#endif    // end __REPLY_H__

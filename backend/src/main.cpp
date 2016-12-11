@@ -65,7 +65,7 @@ int main(int argc, const char** argv)
 
                         try
                         {
-                            msgAsJson = nlohmann::json::parse(std::string{msg, length});
+                            msgAsJson.parse(std::string{msg, length});
                         } 
                         catch (const std::invalid_argument& invalid_argument)
                         {

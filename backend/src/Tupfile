@@ -1,4 +1,11 @@
 include_rules
 
-: foreach *.cpp |> !cc |> %B.o
-: *.o ./common/*.o ./command/*.o ./interface/*.o | <common> <command> <interface> |> !ld |> ws_server
+OBJS  = *.o
+OBJS += ./utils/*.o
+OBJS += ./common/*.o
+OBJS += ./command/*.o
+OBJS += ./interface/*.o
+
+
+: foreach *.cpp |> !cx |> %B.o
+: $(OBJS) |> !ld |> ws_server

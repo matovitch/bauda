@@ -16,14 +16,15 @@ public:
 
     virtual const std::string name() const = 0;
 
-    const std::string& getUsername();
+    const std::string& getUsername() const;
 
-    const uint64_t getUserid();
+    const uint64_t getUserId() const;
+
+    const std::string getUserIdAsString() const;
 
 private:
 
     const std::string _username;
-    const uint64_t    _userid;
 };
 
 #endif // end __CMD_ABSTRACT_H__

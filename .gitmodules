@@ -21,3 +21,6 @@
 [submodule "backend/deps/kingdb"]
 	path = backend/deps/kingdb
 	url = https://github.com/matovitch/kingdb
+[submodule "backend/deps/xxHash"]
+	path = backend/deps/xxHash
+	url = https://github.com/Cyan4973/xxHash

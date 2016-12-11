@@ -1,26 +1,33 @@
 ROOT = $(TUP_CWD)
-CC = clang++
 
-CFLAGS += -Wall
-CFLAGS += -pedantic
-CFLAGS += -std=c++14
+CX = clang++
+CC = clang
 
+FLAGS += -Wall
+FLAGS += -pedantic
 
 ifeq (@(DEBUG),y)
-    CFLAGS += -g
+    FLAGS += -g
 else
-    CFLAGS += -O3
+    FLAGS += -O3
 endif
 
-CFLAGS += -I $(ROOT)
+FLAGS += -I $(ROOT)
+
+CXFLAGS = $(FLAGS)
+CCFLAGS = $(FLAGS) 
+
+CXFLAGS += -std=c++14
 
 LDFLAGS += -l uWS
 LDFLAGS += -l fmt
 LDFLAGS += -l uv
 LDFLAGS += -l z
+LDFLAGS += -l c
 LDFLAGS += -l pthread
 LDFLAGS += -l boost_filesystem
 LDFLAGS += -l boost_system
 
-!cc = |> $(CC) $(CFLAGS) -c %f -o %o |> %B.o
-!ld = |> $(CC) $(LDFLAGS) %f -o %o |>
+!cc = |> $(CC) $(CCFLAGS) -c %f -o %o |> %B.o
+!cx = |> $(CX) $(CXFLAGS) -c %f -o %o |> %B.o
+!ld = |> $(CX) $(LDFLAGS) %f -o %o |>

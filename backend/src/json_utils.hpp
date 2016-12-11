@@ -1,7 +1,9 @@
 #ifndef __JSON_UTILS_H__
 #define __JSON_UTILS_H__
 
+#include <boost/optional.hpp>
 #include <nlohmann/json.hpp>
+
 #include <string>
 
 #include "status.hpp"
@@ -9,35 +11,23 @@
 namespace json_utils
 {
     static const auto EMPTY_JSON  = nlohmann::json{};
-    static const auto EMPTY_SERVER_REPLY = 
-        nlohmann::json
-        {
-            {"status_code", Status::OK},
-            {"status_description", ""},
-            {"data", {}}
-        };
 
-    enum Kind
+    const auto asNull    = [](const nlohmann::json& json) { return json.is_null   (); };
+    const auto asBoolean = [](const nlohmann::json& json) { return json.is_boolean(); };
+    const auto asNumber  = [](const nlohmann::json& json) { return json.is_number (); };
+    const auto asObject  = [](const nlohmann::json& json) { return json.is_object (); };
+    const auto asArray   = [](const nlohmann::json& json) { return json.is_array  (); };
+    const auto asString  = [](const nlohmann::json& json) { return json.is_string (); };
+
+    template <typename KindPredicate>
+    const boost::optional<const nlohmann::json> getFrom(const nlohmann::json& json, 
+                                                        const std::string& key, 
+                                                        KindPredicate kindPredicate)
     {
-        IS_NULL,
-        IS_BOOLEAN,
-        IS_NUMBER,
-        IS_OBJECT,
-        IS_ARRAY,
-        IS_STRING
-    };
-
-    bool exist(const nlohmann::json& json, const std::string& key, Kind kind);
-
-    nlohmann::json buildServerReply(const Status& status,
-                                    const nlohmann::json& data = EMPTY_JSON);
-
-    const std::string buildReplyAsString(nlohmann::json& query,
-                                         const nlohmann::json& serverReply);
-
-    const std::string buildReplyAsString(nlohmann::json& query,
-                                         const Status& status,
-                                         const nlohmann::json& data = EMPTY_JSON);
+        return (json.find(key) != json.end() && kindPredicate(json[key])) 
+            ? boost::optional<const nlohmann::json>{json[key]}
+            : boost::optional<const nlohmann::json>{};
+    }
 
 } // end json_utils namespace
 

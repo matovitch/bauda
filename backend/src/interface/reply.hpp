@@ -5,26 +5,31 @@
 
 #include <nlohmann/json.hpp>
 
-#include "json_utils.hpp"
-#include "status.hpp"
+#include "common/status.hpp"
+#include "utils/json.hpp"
 
 namespace reply
 {
-
-    static const auto EMPTY_SERVER_REPLY = 
-    nlohmann::json
-    {
-        {"status_code", Status::OK},
-        {"status_description", ""},
-        {"data", {}}
-    };
-
+    /**
+     * Entry point, build a reply as string
+     */
     const std::string asString(nlohmann::json& query);
 
+    /**
+     * Create the user logger and dispatch query types
+     */
     const nlohmann::json serverReply(const std::string& serverQuery, const nlohmann::json& model);
 
-    const nlohmann::json buildLoginReply(const nlohmann::json& model);
-    const nlohmann::json buildSigninReply(const nlohmann::json& model);
+    /**
+     * Process each query type and build a reply
+     */
+
+    const nlohmann::json buildLoginReply(const std::string& username, const nlohmann::json& model);
+    const nlohmann::json buildSigninReply(const std::string& username, const nlohmann::json& model);
+
+    /**
+     * List of small helpers to build a reply
+     */
 
     nlohmann::json buildServerReplyAsJson(const Status& status,
                                           const nlohmann::json& data = json_utils::EMPTY_JSON);
@@ -35,6 +40,14 @@ namespace reply
     const std::string buildFromStatus(nlohmann::json& query,
                                       const Status& status,
                                       const nlohmann::json& data = json_utils::EMPTY_JSON);
+
+    static const auto EMPTY_SERVER_REPLY = 
+    nlohmann::json
+    {
+        {"status_code", Status::OK},
+        {"status_description", ""},
+        {"data", {}}
+    };
 
 } // end reply namespace
 

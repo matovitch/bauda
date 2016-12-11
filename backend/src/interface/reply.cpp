@@ -1,11 +1,14 @@
-#include "reply.hpp"
+#include "interface/reply.hpp"
 
 #include <string>
 
 #include <nlohmann/json.hpp>
 
-#include "json_utils.hpp"
-#include "logger.hpp"
+#include "command/cmd_name.hpp"
+#include "command/signin.hpp"
+#include "common/logger.hpp"
+#include "common/config.hpp"
+#include "utils/json.hpp"
 
 namespace reply
 {
@@ -14,21 +17,18 @@ const std::string asString(nlohmann::json& query)
 {
     auto mainLogger = logger::get(Config::get()["log"]["main_logger"]);
 
-    auto model = json_utils::getFrom(query, "model", json_utils::asObject);
+    auto model       = json_utils::getFrom(query, "model"       , json_utils::asObject);
+    auto serverQuery = json_utils::getFrom(query, "server_query", json_utils::asString);
 
     if (!model)
     {
         LOG_WARN(mainLogger, "No model found in query. Replying an error.");
-
         return buildFromStatus(query, Status::KO_NO_MODEL);
     }
-
-    auto serverQuery = json_utils::getFrom(query, "server_query", json_utils::asString);
 
     if (!serverQuery)
     {
         LOG_WARN(mainLogger, "No server_query found in query. Replying an error.");
-
         return buildFromStatus(query, Status::KO_NO_SERVER_QUERY);
     }
 
@@ -58,26 +58,53 @@ const nlohmann::json serverReply(const std::string& serverQuery,
 
     LOG_INFO(userLogger, "Proccessing server query of type <{}>", serverQuery);
 
-    if (serverQuery == "login")
+    if (serverQuery == CMD_NAME_LOGIN)
     {
-        return buildLoginReply(model);
+        return buildLoginReply(*username, model);
     }
-    if (serverQuery == "signin")
+    if (serverQuery == CMD_NAME_SIGNIN)
     {
-        return buildSigninReply(model);
+        return buildSigninReply(*username, model);
     }
 
     return buildServerReplyAsJson(Status::KO_UNKNOWN_SERVER_QUERY);
 }
 
-const nlohmann::json buildLoginReply(const nlohmann::json& model)
+const nlohmann::json buildLoginReply(const std::string& username,
+                                     const nlohmann::json& model)
 {
     return buildServerReplyAsJson(Status::KO_NOT_YET_IMPLEMENTED);
 }
 
-const nlohmann::json buildSigninReply(const nlohmann::json& model)
+const nlohmann::json buildSigninReply(const std::string& username,
+                                      const nlohmann::json& model)
 {
-    return buildServerReplyAsJson(Status::KO_NOT_YET_IMPLEMENTED);
+    auto mainLogger = logger::get(Config::get()["log"]["main_logger"]);
+
+    auto secret = json_utils::getFrom(model, "secret", json_utils::asObject);
+    auto email  = json_utils::getFrom(model, "email" , json_utils::asString);
+
+    if (!secret)
+    {
+        LOG_WARN(mainLogger, "No secret found in model. Replying an error.");
+        return buildServerReplyAsJson(Status::KO_NO_SECRET);
+    }
+
+    if (!email)
+    {
+        LOG_WARN(mainLogger, "No email found in model. Replying an error.");
+        return buildServerReplyAsJson(Status::KO_NO_EMAIL);
+    }
+
+    auto password = json_utils::getFrom(*secret, "password", json_utils::asString);
+
+    if (!password)
+    {
+        LOG_WARN(mainLogger, "No password found in model. Replying an error.");
+        return buildServerReplyAsJson(Status::KO_NO_PASSWORD);
+    }
+
+    return Signin{username}(*password, *email);
 }
 
 nlohmann::json buildServerReplyAsJson(const Status& status,
@@ -93,7 +120,7 @@ nlohmann::json buildServerReplyAsJson(const Status& status,
 }
 
 const std::string buildFromJson(nlohmann::json& query,
-                                     const nlohmann::json& serverReply)
+                                const nlohmann::json& serverReply)
 {
     query["server_reply"] = serverReply;
     return query.dump();

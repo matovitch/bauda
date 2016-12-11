@@ -6,12 +6,12 @@
 
 #include <boost/filesystem.hpp>
 #include <nlohmann/json.hpp>
-#include "uws_utils.hpp"
 #include <uWS/uWS.h>
 
-#include "config.hpp"
-#include "logger.hpp"
-#include "reply.hpp"
+#include "interface/reply.hpp"
+#include "common/config.hpp"
+#include "common/logger.hpp"
+#include "utils/uws.hpp"
 
 int main(int argc, const char** argv)
 {

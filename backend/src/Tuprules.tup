@@ -22,5 +22,5 @@ LDFLAGS += -l pthread
 LDFLAGS += -l boost_filesystem
 LDFLAGS += -l boost_system
 
-!cc = |> $(CC) -c %f -o %o $(CFLAGS) |> %B.o
-!ld = |> $(CC) %f -o %o $(LDFLAGS) |>
+!cc = |> $(CC) $(CFLAGS) -c %f -o %o |> %B.o
+!ld = |> $(CC) $(LDFLAGS) %f -o %o |>

@@ -4,8 +4,6 @@
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
 
-#include "config.hpp"
-
 namespace logger
 {
     enum Level
@@ -28,7 +26,10 @@ namespace logger
     const std::string dumpJson(const nlohmann::json& json);
 
     template <typename... Args>
-    void write(std::shared_ptr<spdlog::logger> log, const Level level, const std::string& format, Args... args)
+    void write(const std::shared_ptr<spdlog::logger> log, 
+               const Level level, 
+               const std::string& format, 
+               Args... args)
     {
         const auto fullFormatAsString = "<{}:{}> " + format;
         const auto fullFormatAsCStr   = fullFormatAsString.c_str();
@@ -58,6 +59,7 @@ namespace logger
             log->critical(fullFormatAsCStr, args...);
         }
     }
+
 } // end logger namespace
 
 #pragma clang diagnostic push
@@ -70,5 +72,19 @@ namespace logger
 #define LOG_CRITICAL(log, format, ...) logger::write(log, logger::Level::CRITICAL, format, __FILE__, __LINE__, ##__VA_ARGS__)
 
 #pragma clang diagnostic pop
+
+class Loggable
+{
+
+public:
+
+    void init(const std::string& loggerName);
+
+    const std::shared_ptr<spdlog::logger> logger() const;
+
+private:
+
+    std::shared_ptr<spdlog::logger> _logger;
+};
 
 #endif // end __LOGGER_H__

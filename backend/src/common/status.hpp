@@ -14,6 +14,9 @@ public:
         OK,
         KO_NOT_YET_IMPLEMENTED,
         KO_NO_MODEL,
+        KO_NO_EMAIL,
+        KO_NO_SECRET,
+        KO_NO_PASSWORD,
         KO_NO_USERNAME,
         KO_NO_SERVER_QUERY,
         KO_UNKNOWN_SERVER_QUERY

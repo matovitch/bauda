@@ -1,10 +1,10 @@
-#include "logger.hpp"
+#include "common/logger.hpp"
 
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
 #include <string>
 
-#include "config.hpp"
+#include "common/config.hpp"
 
 namespace logger
 {
@@ -91,3 +91,11 @@ namespace logger
         return json.dump(Config::get()["log"]["json_indent"]);
     }
 } // end logger namespace
+
+
+void Loggable::init(const std::string& loggerName)
+{
+    _logger = logger::create(loggerName);
+}
+
+const std::shared_ptr<spdlog::logger> Loggable::logger() const { return _logger; }

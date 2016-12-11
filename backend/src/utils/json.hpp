@@ -6,8 +6,6 @@
 
 #include <string>
 
-#include "status.hpp"
-
 namespace json_utils
 {
     static const auto EMPTY_JSON  = nlohmann::json{};

@@ -54,14 +54,6 @@ int main(int argc, const char** argv)
             {
                 worker.hub = std::make_unique<uWS::Hub>();
                 auto& hub = *(worker.hub);
-
-                hub.onDisconnection
-                (
-                    [](uWS::WebSocket<uWS::SERVER> webSocket, int code, char* msg, size_t length)
-                    {
-                        LOG_DEBUG(logger::get(Config::get()["log"]["main_logger"]), "Disconnection.");
-                    }
-                );
                 
                 hub.onMessage
                 (

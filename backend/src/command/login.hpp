@@ -1,5 +1,5 @@
-#ifndef __LOGIN_H__
-#define __LOGIN_H__
+#ifndef __CMD_LOGIN_H__
+#define __CMD_LOGIN_H__
 
 #include "cmd_abstract.hpp"
 
@@ -12,4 +12,4 @@ struct Login : public CmdAbstract
     const nlohmann::json operator()(const std::string& password);
 };
 
-#endif // end __LOGIN_H__
+#endif // end __CMD_LOGIN_H__

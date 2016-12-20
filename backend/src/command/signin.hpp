@@ -1,5 +1,5 @@
-#ifndef __SIGNIN_H__
-#define __SIGNIN_H__
+#ifndef __CMD_SIGNIN_H__
+#define __CMD_SIGNIN_H__
 
 #include "cmd_abstract.hpp"
 
@@ -13,4 +13,4 @@ struct Signin : public CmdAbstract
                                      const std::string& email);
 };
 
-#endif // end __SIGNIN_H__
+#endif // end __CMD_SIGNIN_H__

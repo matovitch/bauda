@@ -27,6 +27,14 @@ int main(int argc, const char** argv)
 
     auto mainLogger = logger::create(Config::get()["log"]["main_logger"]);
 
+    /*
+    LOG_INFO(mainLogger, "####################################");
+    LOG_INFO(mainLogger, "#     CREATE DATABASES THREADS     #");
+    LOG_INFO(mainLogger, "####################################");
+
+    Database{Config::get()["database"]["users"]}();
+    Database{Config::get()["database"]["games"]}();*/
+
     LOG_INFO(mainLogger, "####################################");
     LOG_INFO(mainLogger, "#      START WEBSOCKET SERVER      #");
     LOG_INFO(mainLogger, "####################################");
@@ -34,7 +42,7 @@ int main(int argc, const char** argv)
     uWS      ::Hub          master;
     uWS_utils::TheadedHubs workers;
 
-    workers.resize(Config::get()["websockets"]["workers_size"]);
+    workers.resize(Config::get()["websocket"]["workers_size"]);
 
     master.onConnection
     (
@@ -65,7 +73,7 @@ int main(int argc, const char** argv)
 
                         try
                         {
-                            msgAsJson.parse(std::string{msg, length});
+                            msgAsJson = nlohmann::json::parse(std::string{msg, length});
                         } 
                         catch (const std::invalid_argument& invalid_argument)
                         {
@@ -95,7 +103,7 @@ int main(int argc, const char** argv)
     }
 
     master.getDefaultGroup<uWS::SERVER>().addAsync();
-    master.listen(Config::get()["websockets"]["port"]);
+    master.listen(Config::get()["websocket"]["port"]);
     master.run();
 
     return 0;

@@ -34,8 +34,6 @@ namespace logger
             return spdlog::get(name);
         }
 
-        cleanRegister();
-
         const std::string rootPath = Config::get()["root_path"];
         const std::string  logPath = Config::get()["log"]["path"];
 
@@ -47,36 +45,39 @@ namespace logger
             loggerRegister[logger] = std::chrono::system_clock::now();
         }
 
+        std::size_t cleanPeriod = Config::get()["log"]["clean_period"];
+
+        if (!(loggerRegister.size() % cleanPeriod) &&
+            !(loggerRegister.empty()))
+        {
+            cleanRegister();
+        }
+
         return logger;
     }
 
     void cleanRegister()
     {
         const auto& now = std::chrono::system_clock::now();
-        const auto& cleanPeriod = 
-            std::chrono::seconds(Config::get()["log"]["clean_period"]);
         const auto& loggersLifespan = 
             std::chrono::seconds(Config::get()["log"]["loggers_lifespan"]);
 
-        if (lastClean - now > cleanPeriod)
+        auto it = loggerRegister.begin();
+
+        while (it != loggerRegister.end())
         {
-            auto it = loggerRegister.begin();
-
-            while (it != loggerRegister.end())
+            if (now - it->second > loggersLifespan)
             {
-                if (now - it->second > loggersLifespan)
-                {
-                    spdlog::drop(it->first->name());
+                spdlog::drop(it->first->name());
 
-                    LOG_DEBUG(get(Config::get()["log"]["main_logger"]),
-                              "Logger {} expired.", it->first->name());
+                LOG_DEBUG(get(Config::get()["log"]["main_logger"]),
+                          "Logger {} expired.", it->first->name());
 
-                    it = loggerRegister.erase(it);
-                }
-                else
-                {
-                    it++;
-                }
+                it = loggerRegister.erase(it);
+            }
+            else
+            {
+                it++;
             }
         }
     }

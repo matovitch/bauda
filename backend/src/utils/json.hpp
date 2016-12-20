@@ -18,13 +18,13 @@ namespace json_utils
     const auto asString  = [](const nlohmann::json& json) { return json.is_string (); };
 
     template <typename KindPredicate>
-    const boost::optional<const nlohmann::json> getFrom(const nlohmann::json& json, 
+    const boost::optional<const nlohmann::json&> getFrom(const nlohmann::json& json,
                                                         const std::string& key, 
                                                         KindPredicate kindPredicate)
     {
         return (json.find(key) != json.end() && kindPredicate(json[key])) 
-            ? boost::optional<const nlohmann::json>{json[key]}
-            : boost::optional<const nlohmann::json>{};
+            ? boost::optional<const nlohmann::json&>{json[key]}
+            : boost::optional<const nlohmann::json&>{};
     }
 
 } // end json_utils namespace

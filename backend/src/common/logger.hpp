@@ -65,11 +65,11 @@ namespace logger
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
 
-#define LOG_DEBUG(log, format, ...)    logger::write(log, logger::Level::DEBUG   , format, __FILE__, __LINE__, ##__VA_ARGS__)
-#define LOG_INFO(log, format, ...)     logger::write(log, logger::Level::INFO    , format, __FILE__, __LINE__, ##__VA_ARGS__)
-#define LOG_WARN(log, format, ...)     logger::write(log, logger::Level::WARN    , format, __FILE__, __LINE__, ##__VA_ARGS__)
-#define LOG_ERROR(log, format, ...)    logger::write(log, logger::Level::ERROR   , format, __FILE__, __LINE__, ##__VA_ARGS__)
-#define LOG_CRITICAL(log, format, ...) logger::write(log, logger::Level::CRITICAL, format, __FILE__, __LINE__, ##__VA_ARGS__)
+#define MY_LOG_DEBUG(log, format, ...)    logger::write(log, logger::Level::DEBUG   , format, __FILE__, __LINE__, ##__VA_ARGS__)
+#define MY_LOG_INFO(log, format, ...)     logger::write(log, logger::Level::INFO    , format, __FILE__, __LINE__, ##__VA_ARGS__)
+#define MY_LOG_WARN(log, format, ...)     logger::write(log, logger::Level::WARN    , format, __FILE__, __LINE__, ##__VA_ARGS__)
+#define MY_LOG_ERROR(log, format, ...)    logger::write(log, logger::Level::ERROR   , format, __FILE__, __LINE__, ##__VA_ARGS__)
+#define MY_LOG_CRITICAL(log, format, ...) logger::write(log, logger::Level::CRITICAL, format, __FILE__, __LINE__, ##__VA_ARGS__)
 
 #pragma clang diagnostic pop
 
@@ -80,7 +80,7 @@ public:
 
     void init(const std::string& loggerName);
 
-    const std::shared_ptr<spdlog::logger> logger() const;
+    const std::shared_ptr<spdlog::logger>& logger() const;
 
 private:
 

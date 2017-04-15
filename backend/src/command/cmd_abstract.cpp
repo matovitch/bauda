@@ -18,7 +18,7 @@ CmdAbstract::CmdAbstract(const std::string& username) :
 void CmdAbstract::init()
 {
     Loggable::init(fmt::format("{} - {}", getUserIdAsString(), name()));
-    LOG_DEBUG(logger(), "Starting command.");
+    MY_LOG_DEBUG(logger(), "Starting command.");
 }
 
 const std::string& CmdAbstract::getUsername() const

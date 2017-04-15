@@ -4,8 +4,8 @@ OBJS  = *.o
 OBJS += ./utils/*.o
 OBJS += ./common/*.o
 OBJS += ./command/*.o
+OBJS += ./database/*.o
 OBJS += ./interface/*.o
-
 
 : foreach *.cpp |> !cx |> %B.o
 : $(OBJS) |> !ld |> ws_server

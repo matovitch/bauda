@@ -8,6 +8,7 @@
 #include <nlohmann/json.hpp>
 #include <uWS/uWS.h>
 
+#include "database/database.hpp"
 #include "interface/reply.hpp"
 #include "common/config.hpp"
 #include "common/logger.hpp"
@@ -27,17 +28,15 @@ int main(int argc, const char** argv)
 
     auto mainLogger = logger::create(Config::get()["log"]["main_logger"]);
 
-    /*
-    LOG_INFO(mainLogger, "####################################");
-    LOG_INFO(mainLogger, "#     CREATE DATABASES THREADS     #");
-    LOG_INFO(mainLogger, "####################################");
+    MY_LOG_INFO(mainLogger, "####################################");
+    MY_LOG_INFO(mainLogger, "#      CREATE/OPEN DATABASES       #");
+    MY_LOG_INFO(mainLogger, "####################################");
 
-    Database{Config::get()["database"]["users"]}();
-    Database{Config::get()["database"]["games"]}();*/
+    database::create(Config::get()["database"]["user"]);
 
-    LOG_INFO(mainLogger, "####################################");
-    LOG_INFO(mainLogger, "#      START WEBSOCKET SERVER      #");
-    LOG_INFO(mainLogger, "####################################");
+    MY_LOG_INFO(mainLogger, "####################################");
+    MY_LOG_INFO(mainLogger, "#      START WEBSOCKET SERVER      #");
+    MY_LOG_INFO(mainLogger, "####################################");
 
     uWS      ::Hub          master;
     uWS_utils::TheadedHubs workers;
@@ -49,7 +48,7 @@ int main(int argc, const char** argv)
         [&](uWS::WebSocket<uWS::SERVER> webSocket, 
             uWS::UpgradeInfo upgradeInfo)
         {
-            LOG_INFO(mainLogger,"Connection on master uWS::Hub, forward to workers.");
+            MY_LOG_INFO(mainLogger,"Connection on master uWS::Hub, forward to workers.");
             webSocket.transfer(uWS_utils::pickDefaultGroup(workers));
         }
     );
@@ -77,20 +76,20 @@ int main(int argc, const char** argv)
                         } 
                         catch (const std::invalid_argument& invalid_argument)
                         {
-                            LOG_ERROR(mainLogger, 
+                            MY_LOG_ERROR(mainLogger, 
                                       "[EXCEPTION] Invalid message({} bytes): {}",
                                       length,
                                       invalid_argument.what());
-                            LOG_DEBUG(mainLogger, 
+                            MY_LOG_DEBUG(mainLogger, 
                                       "[EXCEPTION] Message:\n{}",
                                       msg);
                         }
 
-                        LOG_DEBUG(mainLogger, "Receiving:\n{}", logger::dumpJson(msgAsJson));
+                        MY_LOG_DEBUG(mainLogger, "Receiving:\n{}", logger::dumpJson(msgAsJson));
 
                         const auto& reply = reply::asString(msgAsJson);
 
-                        LOG_DEBUG(mainLogger, "Replying:\n{}", logger::dumpJson(nlohmann::json::parse(reply)));
+                        MY_LOG_DEBUG(mainLogger, "Replying:\n{}", logger::dumpJson(nlohmann::json::parse(reply)));
 
                         webSocket.send(reply.c_str(), reply.size(), code);
                     }

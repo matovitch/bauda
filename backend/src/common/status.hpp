@@ -19,7 +19,8 @@ public:
         KO_NO_PASSWORD,
         KO_NO_USERNAME,
         KO_NO_SERVER_QUERY,
-        KO_UNKNOWN_SERVER_QUERY
+        KO_UNKNOWN_SERVER_QUERY,
+        KO_SIGNIN_USERNAME_TAKEN
     };
 
     Status(uint32_t code);

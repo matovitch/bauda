@@ -1,6 +1,8 @@
 #ifndef __DB_ORDER_H__
 #define __DB_ORDER_H__
 
+#include <kingdb/kdb.h>
+
 #include <boost/optional.hpp>
 #include <memory>
 #include <future>
@@ -21,9 +23,50 @@ public:
 
         kdb::Status status;
         std::string value;
-    }
 
-    typedef std::promise<Result>     Context;
+        static const Result EMPTY_RESULT;
+    };
+
+    class Context
+    {
+
+    public:
+
+        void wait()
+        {
+            _promise.get_future().get();
+        }
+
+        kdb::Status getStatus()
+        {
+            return _promise.get_future().get().status;
+        }
+
+        std::string getValue()
+        {
+            return _promise.get_future().get().value;
+        }
+
+        bool isOK()
+        {
+            return getStatus().IsOK();
+        }
+
+        bool isNotFound()
+        {
+            return getStatus().IsNotFound();
+        }
+
+        void setResult(const Result& result)
+        {
+            _promise.set_value(result);
+        }
+
+    private:
+
+        std::promise<Result> _promise;
+    };
+
     typedef std::shared_ptr<Context> ContextSPtr;
 
     enum
@@ -33,46 +76,22 @@ public:
         DEL
     };
 
-    Order(const ContextSPtr& context,
+    Order(const std::shared_ptr<Context>& context,
           const uint8_t code, 
           const std::string& key,
-          const std::string& value) :
-        _context{context}
-        _code{code},
-        _key{key},
-        _value{value},
-    {}
+          const std::string& value);
+    
+    void execute(kdb::Database& database);
 
-    execute(kdb::Database& database)
-    {
-        kdb::Status status;
-
-        if (_code == GET)
-        {
-            status = database.Get(kdb::ReadOptions{}, _key, &_value);
-        }
-        if (_code == SET)
-        {
-            status = database.Put(kdb::WriteOptions{}, _key, _value);
-        }
-        if (_code == DEL)
-        {
-            status = database.Delete(kdb::WriteOptions{}, _key);
-        }
-
-        _context.set_value(Result{status, _value});
-    }
+    static const std::string EMPTY_VALUE;
 
 private:
 
-    ContextSPtr                         _context;
+    ContextSPtr _context;
 
-    const uint8_t                      _code;
-    const std::string                  _key;
-          std::string                  _value;
-
-    static const std::string EMPTY_VALUE = "";
-    static const Result EMPTY_RESULT = Result{kdb::Status::};
-}
+    const uint8_t            _code;
+    const std::string        _key;
+          std::string        _value;
+};
 
 #endif //__DB_ORDER_H__

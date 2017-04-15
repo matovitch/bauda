@@ -22,13 +22,13 @@ const std::string asString(nlohmann::json& query)
 
     if (!model)
     {
-        LOG_WARN(mainLogger, "No model found in query. Replying an error.");
+        MY_LOG_WARN(mainLogger, "No model found in query. Replying an error.");
         return buildFromStatus(query, Status::KO_NO_MODEL);
     }
 
     if (!serverQuery)
     {
-        LOG_WARN(mainLogger, "No server_query found in query. Replying an error.");
+        MY_LOG_WARN(mainLogger, "No server_query found in query. Replying an error.");
         return buildFromStatus(query, Status::KO_NO_SERVER_QUERY);
     }
 
@@ -47,7 +47,7 @@ const nlohmann::json serverReply(const std::string& serverQuery,
 
     if (!username)
     {
-        LOG_WARN(logger::get(Config::get()["log"]["main_logger"]),
+        MY_LOG_WARN(logger::get(Config::get()["log"]["main_logger"]),
                  "No username found in model. Replying an error.");
 
         return buildServerReplyAsJson(Status::KO_NO_USERNAME);
@@ -56,13 +56,13 @@ const nlohmann::json serverReply(const std::string& serverQuery,
     auto userId     = std::hash<std::string>{}(*username);
     auto userLogger = logger::create(fmt::format("{:=16x}", userId));
 
-    LOG_INFO(userLogger, "Proccessing server query of type <{}>", serverQuery);
+    MY_LOG_INFO(userLogger, "Proccessing server query of type <{}>", serverQuery);
 
-    if (serverQuery == CMD_NAME_LOGIN)
+    if (serverQuery == K_CMD_NAME_LOGIN)
     {
         return buildLoginReply(*username, model);
     }
-    if (serverQuery == CMD_NAME_SIGNIN)
+    if (serverQuery == K_CMD_NAME_SIGNIN)
     {
         return buildSigninReply(*username, model);
     }
@@ -86,13 +86,13 @@ const nlohmann::json buildSigninReply(const std::string& username,
 
     if (!secret)
     {
-        LOG_WARN(mainLogger, "No secret found in model. Replying an error.");
+        MY_LOG_WARN(mainLogger, "No secret found in model. Replying an error.");
         return buildServerReplyAsJson(Status::KO_NO_SECRET);
     }
 
     if (!email)
     {
-        LOG_WARN(mainLogger, "No email found in model. Replying an error.");
+        MY_LOG_WARN(mainLogger, "No email found in model. Replying an error.");
         return buildServerReplyAsJson(Status::KO_NO_EMAIL);
     }
 
@@ -100,7 +100,7 @@ const nlohmann::json buildSigninReply(const std::string& username,
 
     if (!password)
     {
-        LOG_WARN(mainLogger, "No password found in model. Replying an error.");
+        MY_LOG_WARN(mainLogger, "No password found in model. Replying an error.");
         return buildServerReplyAsJson(Status::KO_NO_PASSWORD);
     }
 

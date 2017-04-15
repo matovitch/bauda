@@ -13,12 +13,14 @@ else
 endif
 
 FLAGS += -I $(ROOT)
+FLAGS += -I /usr/local/include/kingdb/
 
 CXFLAGS = $(FLAGS)
 CCFLAGS = $(FLAGS) 
 
 CXFLAGS += -std=c++14
 
+LDFLAGS += -l kingdb
 LDFLAGS += -l uWS
 LDFLAGS += -l fmt
 LDFLAGS += -l uv

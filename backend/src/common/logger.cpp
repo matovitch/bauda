@@ -8,11 +8,10 @@
 
 namespace logger
 {
-    typedef std::unordered_map<std::shared_ptr<spdlog::logger>, 
-                               std::chrono::system_clock::time_point> LoggerRegister;
+    typedef std::map<std::chrono::system_clock::time_point,
+                     std::shared_ptr<spdlog::logger>> Register;
 
-    static LoggerRegister loggerRegister;
-    static std::chrono::system_clock::time_point lastClean;
+    static Register REGISTER;
 
     void init()
     {
@@ -22,9 +21,7 @@ namespace logger
                                std::chrono::milliseconds(Config::get()["log"]["flush_delay_in_ms"]));
 
         spdlog::set_level(Config::get()["debug_mode"] ? spdlog::level::debug 
-                                                          : spdlog::level::info);
-
-        lastClean = std::chrono::system_clock::now();
+                                                      : spdlog::level::info);
     }
 
     std::shared_ptr<spdlog::logger> create(const std::string& name)
@@ -42,13 +39,13 @@ namespace logger
 
         if (name != Config::get()["log"]["main_logger"])
         {
-            loggerRegister[logger] = std::chrono::system_clock::now();
+            REGISTER[std::chrono::system_clock::now()] = logger;
         }
 
         std::size_t cleanPeriod = Config::get()["log"]["clean_period"];
 
-        if (!(loggerRegister.size() % cleanPeriod) &&
-            !(loggerRegister.empty()))
+        if (!(REGISTER.size() % cleanPeriod) &&
+            !(REGISTER.empty()))
         {
             cleanRegister();
         }
@@ -62,24 +59,9 @@ namespace logger
         const auto& loggersLifespan = 
             std::chrono::seconds(Config::get()["log"]["loggers_lifespan"]);
 
-        auto it = loggerRegister.begin();
+        const auto& deleteUpTo = REGISTER.lower_bound(now - loggersLifespan);;
 
-        while (it != loggerRegister.end())
-        {
-            if (now - it->second > loggersLifespan)
-            {
-                spdlog::drop(it->first->name());
-
-                LOG_DEBUG(get(Config::get()["log"]["main_logger"]),
-                          "Logger {} expired.", it->first->name());
-
-                it = loggerRegister.erase(it);
-            }
-            else
-            {
-                it++;
-            }
-        }
+        REGISTER.erase(REGISTER.begin(), deleteUpTo);
     }
 
     std::shared_ptr<spdlog::logger> get(const std::string log)
@@ -99,4 +81,4 @@ void Loggable::init(const std::string& loggerName)
     _logger = logger::create(loggerName);
 }
 
-const std::shared_ptr<spdlog::logger> Loggable::logger() const { return _logger; }
+const std::shared_ptr<spdlog::logger>& Loggable::logger() const { return _logger; }

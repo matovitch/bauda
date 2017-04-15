@@ -9,7 +9,7 @@
 #include "interface/reply.hpp"
 #include "common/status.hpp"
 
-const std::string Login::name() const { return CMD_NAME_LOGIN; }
+const std::string Login::name() const { return K_CMD_NAME_LOGIN; }
 
 Login::Login(const std::string& username) : 
     CmdAbstract(username)

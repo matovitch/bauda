@@ -32,4 +32,4 @@ LDFLAGS += -l boost_system
 
 !cc = |> $(CC) $(CCFLAGS) -c %f -o %o |> %B.o
 !cx = |> $(CX) $(CXFLAGS) -c %f -o %o |> %B.o
-!ld = |> $(CX) $(LDFLAGS) %f -o %o |>
+!ld = |> $(CX) %f $(LDFLAGS) -o %o |>

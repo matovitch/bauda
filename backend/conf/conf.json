@@ -21,8 +21,10 @@
 
     "database":
     {
-        "extension" : ".db",
-        "path"      : "data/",
-        "user"      : "users"
+        "extension"        : ".db",
+        "path"             : "data/",
+        "user"             : "users",
+        "push_delay_in_us" : 10,
+        "max_push_retry"   : 5
     }
 }

@@ -1,0 +1,12 @@
+include_rules
+
+OBJS  = $(ROOT)/src/*.o
+OBJS += $(ROOT)/src/capnp/*.o
+OBJS += $(ROOT)/src/utils/*.o
+OBJS += $(ROOT)/src/common/*.o
+OBJS += $(ROOT)/src/command/*.o
+OBJS += $(ROOT)/src/database/*.o
+OBJS += $(ROOT)/src/interface/*.o
+OBJS += $(ROOT)/capnp/gen/*.o
+
+: $(OBJS) |> !ld |> bauda_backend

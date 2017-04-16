@@ -12,7 +12,7 @@ else
     FLAGS += -O3
 endif
 
-FLAGS += -I $(ROOT)
+FLAGS += -I $(ROOT)/src
 FLAGS += -I /usr/local/include/kingdb/
 
 CXFLAGS = $(FLAGS)
@@ -36,3 +36,4 @@ LDFLAGS += -l boost_system
 !cc = |> $(CC) $(CCFLAGS) -c %f -o %o |> %B.o
 !cx = |> $(CX) $(CXFLAGS) -c %f -o %o |> %B.o
 !ld = |> $(CX) %f $(LDFLAGS) -o %o |>
+!capnp = |> capnp compile %f -oc++:gen |>

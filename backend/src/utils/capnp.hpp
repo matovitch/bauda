@@ -19,6 +19,8 @@ std::string stringFromMessage(capnp::MallocMessageBuilder& message)
 
     std::string messageAsString;
 
+    messageAsString.resize(kjArray.size());
+
     std::copy(kjArray.begin(), kjArray.end(), messageAsString.begin());
 
     return messageAsString;

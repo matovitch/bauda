@@ -15,6 +15,8 @@ public:
 
     struct Result
     {
+        Result() {}
+
         Result(const kdb::Status& aStatus,
                const std::string& aValue) :
             status{aStatus},
@@ -32,6 +34,8 @@ public:
 
     public:
 
+        Context() : _result(new Result) {}
+
         void wait()
         {
             _promise.get_future().get();
@@ -39,12 +43,12 @@ public:
 
         kdb::Status getStatus()
         {
-            return _promise.get_future().get().status;
+            return _result->status;
         }
 
         std::string getValue()
         {
-            return _promise.get_future().get().value;
+            return _result->value;
         }
 
         bool isOK()
@@ -57,14 +61,17 @@ public:
             return getStatus().IsNotFound();
         }
 
-        void setResult(const Result& result)
+        void setResult(const kdb::Status& status, const std::string value)
         {
-            _promise.set_value(result);
+            _result->status = status;
+            _result->value = value;
+            _promise.set_value(_result.get());
         }
 
     private:
 
-        std::promise<Result> _promise;
+        std::unique_ptr<Result> _result;
+        std::promise<Result*>  _promise;
     };
 
     typedef std::shared_ptr<Context> ContextSPtr;

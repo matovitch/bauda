@@ -1,11 +1,11 @@
 #ifndef __DB_DATABASE_H__
 #define __DB_DATABASE_H__
 
+#include <cstddef>
 #include <chrono>
 #include <memory>
 #include <thread>
 #include <string>
-#include <unordered_map>
 
 #include <boost/lockfree/queue.hpp>
 #include <boost/optional.hpp>
@@ -39,9 +39,14 @@ private:
                                   const std::string& key,
                                   const std::string& value = Order::EMPTY_VALUE);
 
+    static const std::size_t K_ORDERS_QUEUE_SIZE = 128;
+
+    typedef boost::lockfree::capacity<K_ORDERS_QUEUE_SIZE> OrdersQueuecapacity;
+    typedef boost::lockfree::queue<Order*, OrdersQueuecapacity> OrdersQueue;
+
     std::unique_ptr<kdb::Database> _database;
     kdb::Status                    _status;
-    boost::lockfree::queue<Order*, boost::lockfree::capacity<50>> _orders;
+    OrdersQueue                    _orders;
     std::unique_ptr<std::thread>   _thread;
 };
 

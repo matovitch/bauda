@@ -22,7 +22,6 @@ void Order::execute(kdb::Database& database)
 
     if (_code == GET)
     {
-
         status = database.Get(readOptions, _key, &_value);
     }
     if (_code == SET)
@@ -34,5 +33,5 @@ void Order::execute(kdb::Database& database)
         status = database.Delete(writeOptions, _key);
     }
 
-    _context->setResult(Result{status, _value});
+    _context->setResult(status, _value);
 }

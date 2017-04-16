@@ -8,28 +8,11 @@
 #include <kingdb/kdb.h>
 
 #include <boost/optional.hpp>
+#include <unordered_map>
 #include <utility>
 #include <cstddef>
 #include <string>
 #include <memory>
-
-namespace database
-{
-    static std::unordered_map<std::string, std::unique_ptr<DataBase>> REGISTER;
-
-    DataBase& get(const std::string& name)
-    {
-        return *(REGISTER.find(name)->second);
-    }
-
-    DataBase& create(const std::string& name)
-    {
-        REGISTER.emplace(name, std::make_unique<DataBase>(name));
-
-        return get(name);
-    }
-
-} // end database namespace
 
 DataBase::DataBase(const std::string& name)
 {
@@ -120,10 +103,27 @@ void DataBase::run()
 
     while (true)
     {
-        if (!_orders.empty())
+        if (_orders.pop(order))
         {
-            _orders.pop(order);
             order->execute(*_database);
         }
     }
 }
+
+namespace database
+{
+    static std::unordered_map<std::string, std::unique_ptr<DataBase>> REGISTER;
+
+    DataBase& get(const std::string& name)
+    {
+        return *(REGISTER.find(name)->second);
+    }
+
+    DataBase& create(const std::string& name)
+    {
+        REGISTER.emplace(name, std::make_unique<DataBase>(name));
+
+        return get(name);
+    }
+
+} // end database namespace

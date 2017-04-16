@@ -9,6 +9,7 @@
 #include "command/cmd_name.hpp"
 #include "interface/reply.hpp"
 #include "common/status.hpp"
+#include "capnp/user.hpp"
 
 const std::string Signin::name() const { return K_CMD_NAME_SIGNIN; }
 
@@ -27,6 +28,8 @@ const nlohmann::json Signin::operator()(const std::string& password,
     {
         return reply::buildServerReplyAsJson(Status::KO_SIGNIN_USERNAME_TAKEN);
     }
+
+    userDb.set(getUserIdAsString(), user::create(getUsername(), password, email));
 
     return reply::buildServerReplyAsJson(Status::KO_NOT_YET_IMPLEMENTED);
 }

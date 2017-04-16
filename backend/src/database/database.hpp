@@ -39,7 +39,7 @@ private:
                                   const std::string& key,
                                   const std::string& value = Order::EMPTY_VALUE);
 
-    static const std::size_t K_ORDERS_QUEUE_SIZE = 128;
+    static constexpr std::size_t K_ORDERS_QUEUE_SIZE = 128;
 
     typedef boost::lockfree::capacity<K_ORDERS_QUEUE_SIZE> OrdersQueuecapacity;
     typedef boost::lockfree::queue<Order*, OrdersQueuecapacity> OrdersQueue;

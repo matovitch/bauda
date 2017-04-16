@@ -12,8 +12,3 @@ struct User
     email    @1 :Text;
     password @2 :Password;
 }
-
-struct UserIdList
-{
-	value @0 : List(UInt64);
-}

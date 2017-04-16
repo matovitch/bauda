@@ -21,6 +21,9 @@ CCFLAGS = $(FLAGS)
 CXFLAGS += -std=c++14
 
 LDFLAGS += -l kingdb
+LDFLAGS += -l scrypt
+LDFLAGS += -l capnp
+LDFLAGS += -l kj
 LDFLAGS += -l uWS
 LDFLAGS += -l fmt
 LDFLAGS += -l uv

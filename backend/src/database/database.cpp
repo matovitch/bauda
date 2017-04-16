@@ -34,6 +34,8 @@ DataBase::DataBase(const std::string& name)
         throw std::runtime_error("Failed to open a database. Details in the logs...");
     }
 
+    MY_LOG_INFO(logger(), "Openning/Creation of database \"{}\" successful.", name);
+
     _thread = std::make_unique<std::thread>(&DataBase::run, this);
 }
 
@@ -41,24 +43,46 @@ bool DataBase::isNotFound(const std::string key)
 {
     auto context = askAndWait(Order::GET, key);
 
-    return context ? context->isNotFound()
-                   : false;
+    if (!context)
+    {
+        return false;
+    }
+
+    MY_LOG_DEBUG(logger(), "Database traces:\n\tGET \"{}\"\n\t{}", 
+                 key, context->getStatus().ToString());
+
+    return context->isNotFound();
 }
 
 bool DataBase::set(const std::string& key, const std::string& value)
 {
     auto context = askAndWait(Order::SET, key, value);
 
-    return context ? context->isOK()
-                   : false;
+    if (!context)
+    {
+        return false;
+    }
+
+    MY_LOG_DEBUG(logger(), "Database traces:\n\tSET \"{}\"\n\t{}", 
+             key, context->getStatus().ToString());
+
+    return context->isOK();
 }
 
 boost::optional<std::string> DataBase::get(const std::string& key)
 {
     auto context = askAndWait(Order::GET, key);
 
-    return (context && context->isOK()) ? context->getValue()
-                                        : boost::optional<std::string>{};
+    if (!context)
+    {
+        return boost::optional<std::string>{};
+    }
+
+    MY_LOG_DEBUG(logger(), "Database traces:\n\tGET \"{}\"\n\t{}", 
+             key, context->getStatus().ToString());
+
+    return context->isOK() ? context->getValue()
+                           : boost::optional<std::string>{};
 }
 
 

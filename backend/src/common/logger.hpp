@@ -15,13 +15,15 @@ namespace logger
         CRITICAL
     };
 
+    typedef std::shared_ptr<spdlog::logger> Logger;
+
     void init();
 
     void cleanRegister();
 
-    std::shared_ptr<spdlog::logger> create(const std::string& name);
+    Logger create(const std::string& name);
 
-    std::shared_ptr<spdlog::logger> get(const std::string log);
+    Logger get(const std::string& name);
 
     const std::string dumpJson(const nlohmann::json& json);
 
@@ -80,11 +82,11 @@ public:
 
     void init(const std::string& loggerName);
 
-    const std::shared_ptr<spdlog::logger>& logger() const;
+    const logger::Logger& logger() const;
 
 private:
 
-    std::shared_ptr<spdlog::logger> _logger;
+    logger::Logger _logger;
 };
 
 #endif // end __LOGGER_H__

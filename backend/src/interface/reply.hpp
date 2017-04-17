@@ -6,6 +6,7 @@
 #include <nlohmann/json.hpp>
 
 #include "common/status.hpp"
+#include "common/logger.hpp"
 #include "utils/json.hpp"
 
 namespace reply
@@ -32,6 +33,7 @@ namespace reply
      */
 
     nlohmann::json buildServerReplyAsJson(const Status& status,
+                                          const logger::Logger& logger,
                                           const nlohmann::json& data = json_utils::EMPTY_JSON);
 
     const std::string buildFromJson(nlohmann::json& query,
@@ -39,13 +41,13 @@ namespace reply
 
     const std::string buildFromStatus(nlohmann::json& query,
                                       const Status& status,
+                                      const logger::Logger& logger,
                                       const nlohmann::json& data = json_utils::EMPTY_JSON);
 
     static const auto EMPTY_SERVER_REPLY = 
     nlohmann::json
     {
-        {"status_code", Status::OK},
-        {"status_description", ""},
+        {"status_code", Status::KO},
         {"data", {}}
     };
 

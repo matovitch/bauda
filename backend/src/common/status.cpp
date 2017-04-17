@@ -5,7 +5,7 @@
 const std::unordered_map<uint32_t, const std::string> Status::_DESCRIPTIONS =
 {
     { Status::OK                      , "OK"                     },
-    { Status::KO_NOT_YET_IMPLEMENTED  , "Not yet implemented."   },
+    { Status::KO                      , "KO"                     },
     { Status::KO_NO_MODEL             , "Missing model."         },
     { Status::KO_NO_EMAIL             , "Missing email."         },
     { Status::KO_NO_SECRET            , "Missing secret."        },
@@ -24,7 +24,7 @@ Status::Status(uint32_t code) : _code(code) {}
 const std::string& Status::getDescription() const
 {
     return (_DESCRIPTIONS.find(_code) != _DESCRIPTIONS.end()) ? _DESCRIPTIONS.at(_code)
-                                                              : _DESCRIPTIONS.at(Status::KO_NOT_YET_IMPLEMENTED);
+                                                              : _DESCRIPTIONS.at(Status::KO);
 }
 
 uint32_t Status::getCode() const

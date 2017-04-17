@@ -27,13 +27,13 @@ const nlohmann::json Login::operator()(const std::string& password)
 
     if (!userBlob)
     {
-        return reply::buildServerReplyAsJson(Status::KO_LOGIN_USER_NOT_FOUND);
+        return reply::buildServerReplyAsJson(Status::KO_LOGIN_USER_NOT_FOUND, logger());
     }
 
     if (!user::checkPassword(*userBlob, password))
     {
-        return reply::buildServerReplyAsJson(Status::KO_LOGIN_WRONG_PASSWORD);
+        return reply::buildServerReplyAsJson(Status::KO_LOGIN_WRONG_PASSWORD, logger());
     }
 
-    return reply::buildServerReplyAsJson(Status::OK);
+    return reply::buildServerReplyAsJson(Status::OK, logger());
 }

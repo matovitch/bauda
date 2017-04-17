@@ -24,7 +24,7 @@ namespace logger
                                                       : spdlog::level::info);
     }
 
-    std::shared_ptr<spdlog::logger> create(const std::string& name)
+    Logger create(const std::string& name)
     {
         if (spdlog::get(name))
         {
@@ -64,9 +64,9 @@ namespace logger
         REGISTER.erase(REGISTER.begin(), deleteUpTo);
     }
 
-    std::shared_ptr<spdlog::logger> get(const std::string log)
+    Logger get(const std::string& name)
     {
-        return spdlog::get(log);
+        return spdlog::get(name);
     }
 
     const std::string dumpJson(const nlohmann::json& json)
@@ -81,4 +81,4 @@ void Loggable::init(const std::string& loggerName)
     _logger = logger::create(loggerName);
 }
 
-const std::shared_ptr<spdlog::logger>& Loggable::logger() const { return _logger; }
+const logger::Logger& Loggable::logger() const { return _logger; }

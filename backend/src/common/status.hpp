@@ -12,7 +12,7 @@ public:
     enum
     {
         OK,
-        KO_NOT_YET_IMPLEMENTED,
+        KO,
         KO_NO_MODEL,
         KO_NO_EMAIL,
         KO_NO_SECRET,

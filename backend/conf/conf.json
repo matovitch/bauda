@@ -24,7 +24,8 @@
         "extension"        : ".db",
         "path"             : "data/",
         "user"             : "users",
-        "push_delay_in_us" :  10,
-        "max_push_retry"   :   5
+        "poll_delay_in_us" :  1000,
+        "push_delay_in_us" :    50,
+        "push_max_attempt" :     5
     }
 }

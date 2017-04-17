@@ -31,6 +31,15 @@ public:
 
 private:
 
+    struct Settings
+    {
+        unsigned                  pushMaxAttempt;
+        std::chrono::microseconds pushDelay;
+        std::chrono::microseconds pollDelay;
+    };
+
+    void readSettings();
+
     void run();
 
     bool pushOrder(Order* const order);
@@ -48,6 +57,7 @@ private:
     kdb::Status                    _status;
     OrdersQueue                    _orders;
     std::unique_ptr<std::thread>   _thread;
+    Settings                       _settings;
 };
 
 namespace database

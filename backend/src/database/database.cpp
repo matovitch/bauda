@@ -18,6 +18,8 @@ DataBase::DataBase(const std::string& name)
 {
     Loggable::init("database - " + name);
 
+    readSettings();
+
     const std::string dbExtension = Config::get()["database"]["extension"];
     const std::string dbPath      = Config::get()["database"]["path"];
     const std::string rootPath    = Config::get()["root_path"];
@@ -85,20 +87,27 @@ boost::optional<std::string> DataBase::get(const std::string& key)
                            : boost::optional<std::string>{};
 }
 
+void DataBase::readSettings()
+{
+    const unsigned pushDelayInUs = Config::get()["database"]["push_delay_in_us"];
+    const unsigned pollDelayInUs = Config::get()["database"]["poll_delay_in_us"];
+    
+    _settings.pushDelay      = std::chrono::microseconds{pushDelayInUs};
+    _settings.pollDelay      = std::chrono::microseconds{pollDelayInUs};
+    _settings.pushMaxAttempt = Config::get()["database"]["push_max_attempt"];
+}
 
 bool DataBase::pushOrder(Order* const order)
 {
-    const uint32_t attemtDelay = Config::get()["database"]["push_delay_in_us"];
-    const uint32_t maxAttemts  = Config::get()["database"]["max_push_retry"];
-          uint32_t attempt     = 0; 
+    unsigned attempt = 0; 
 
-    while (!_orders.push(order) && attempt < maxAttemts)
+    while (!_orders.push(order) && attempt < _settings.pushMaxAttempt)
     {
-        std::this_thread::sleep_for(std::chrono::microseconds(attemtDelay));
+        std::this_thread::sleep_for(_settings.pushDelay);
         attempt++;
     }
 
-    return attempt != maxAttemts;
+    return attempt != _settings.pushMaxAttempt;
 }
 
 Order::ContextSPtr DataBase::askAndWait(const uint8_t code, 
@@ -127,10 +136,12 @@ void DataBase::run()
 
     while (true)
     {
-        if (_orders.pop(order))
+        while (_orders.pop(order))
         {
             order->execute(*_database);
         }
+
+        std::this_thread::sleep_for(_settings.pollDelay);
     }
 }
 

@@ -29,7 +29,10 @@ const nlohmann::json Signin::operator()(const std::string& password,
         return reply::buildServerReplyAsJson(Status::KO_SIGNIN_USERNAME_TAKEN);
     }
 
-    userDb.set(getUserIdAsString(), user::create(getUsername(), password, email));
+    if (!userDb.set(getUserIdAsString(), user::create(getUsername(), password, email)))
+    {
+        return reply::buildServerReplyAsJson(Status::KO_SIGNIN_DATABASE_ERROR);
+    }
 
-    return reply::buildServerReplyAsJson(Status::KO_NOT_YET_IMPLEMENTED);
+    return reply::buildServerReplyAsJson(Status::OK);
 }

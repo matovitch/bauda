@@ -1,30 +1,33 @@
 #ifndef __CAPNP_UTILS_H__
 #define __CAPNP_UTILS_H__
 
+#include <capnp/serialize-packed.h>
+#include <capnp/message.h>
 #include <kj/io.h>
 
-#include <algorithm>
+#include <memory>
 #include <string>
 
 namespace capnp_utils
 {
 
-std::string stringFromMessage(capnp::MallocMessageBuilder& message)
+std::string stringFromMessageBuilder(capnp::MallocMessageBuilder& message);
+
+struct Reader
 {
-    kj::VectorOutputStream kjVectorOutputStream;
+    typedef capnp::PackedMessageReader Message;
 
-    writePackedMessage(kjVectorOutputStream, message);
+    Reader(const std::string& blobAsString);
 
-    auto kjArray = kjVectorOutputStream.getArray();
+    template <class T>
+    typename T::Reader get()
+    {
+        return _message->getRoot<T>();
+    }
 
-    std::string messageAsString;
-
-    messageAsString.resize(kjArray.size());
-
-    std::copy(kjArray.begin(), kjArray.end(), messageAsString.begin());
-
-    return messageAsString;
-}
+    kj::VectorOutputStream _vectorOutputStream;
+    std::unique_ptr<Message> _message;
+};
 
 } // end capnp_utils namspace
 

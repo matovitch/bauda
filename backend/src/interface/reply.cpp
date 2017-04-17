@@ -6,6 +6,7 @@
 
 #include "command/cmd_name.hpp"
 #include "command/signin.hpp"
+#include "command/login.hpp"
 #include "common/logger.hpp"
 #include "common/config.hpp"
 #include "utils/json.hpp"
@@ -73,7 +74,25 @@ const nlohmann::json serverReply(const std::string& serverQuery,
 const nlohmann::json buildLoginReply(const std::string& username,
                                      const nlohmann::json& model)
 {
-    return buildServerReplyAsJson(Status::KO_NOT_YET_IMPLEMENTED);
+    auto mainLogger = logger::get(Config::get()["log"]["main_logger"]);
+
+    auto secret = json_utils::getFrom(model, "secret", json_utils::asObject);
+
+    if (!secret)
+    {
+        MY_LOG_WARN(mainLogger, "No secret found in model. Replying an error.");
+        return buildServerReplyAsJson(Status::KO_NO_SECRET);
+    }
+
+    auto password = json_utils::getFrom(*secret, "password", json_utils::asString);
+
+    if (!password)
+    {
+        MY_LOG_WARN(mainLogger, "No password found in model. Replying an error.");
+        return buildServerReplyAsJson(Status::KO_NO_PASSWORD);
+    }
+
+    return Login{username}(*password);
 }
 
 const nlohmann::json buildSigninReply(const std::string& username,

@@ -1,7 +1,8 @@
 ROOT = $(TUP_CWD)
 
-CX = clang++
-CC = clang
+CL = clang++
+CX = g++
+CC = gcc
 
 FLAGS += -Wall
 FLAGS += -pedantic
@@ -35,5 +36,6 @@ LDFLAGS += -l boost_system
 
 !cc = |> $(CC) $(CCFLAGS) -c %f -o %o |> %B.o
 !cx = |> $(CX) $(CXFLAGS) -c %f -o %o |> %B.o
-!ld = |> $(CX) %f $(LDFLAGS) -o %o |>
+!cl = |> $(CL) $(CXFLAGS) -c %f -o %o |> %B.o
+!ld = |> $(CL) %f $(LDFLAGS) -o %o |>
 !capnp = |> capnp compile %f -oc++:gen |>

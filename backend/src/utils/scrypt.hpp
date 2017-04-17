@@ -22,26 +22,18 @@ typedef std::array<uint8_t, K_HASH_SIZE> Hash;
 
 typedef uint64_t Salt;
 
-struct HashAndSalt
+struct SaltAndHash
 {
-  Hash hash;
-  Salt salt;
+    Salt salt;
+    Hash hash;
 };
 
-Salt craftSalt()
+Hash hash(const std::string& toHash, const Salt& salt)
 {
-    static auto randomEngine = std::default_random_engine(std::random_device{}());
-           auto distribution = std::uniform_int_distribution<uint64_t>();
-    return distribution(randomEngine);
-}
-
-HashAndSalt craftHashAndSalt(const std::string& toHashWithSalt)
-{
-    const Salt salt = craftSalt();
     Hash hash;
 
-    int hashing = libscrypt_scrypt(reinterpret_cast<const uint8_t*>(toHashWithSalt.c_str()), 
-                                   toHashWithSalt.size(),
+    int hashing = libscrypt_scrypt(reinterpret_cast<const uint8_t*>(toHash.c_str()), 
+                                   toHash.size(),
                                    reinterpret_cast<const uint8_t*>(&salt),
                                    sizeof(uint64_t),
                                    K_SCRYPT_N,
@@ -55,7 +47,21 @@ HashAndSalt craftHashAndSalt(const std::string& toHashWithSalt)
         throw std::runtime_error("Error while hashing the password.");
     }
 
-    return {hash, salt};
+    return hash;
+}
+
+Salt craftSalt()
+{
+    static auto randomEngine = std::default_random_engine(std::random_device{}());
+           auto distribution = std::uniform_int_distribution<uint64_t>();
+    return distribution(randomEngine);
+}
+
+SaltAndHash craftSaltAndHash(const std::string& toHashWithSalt)
+{
+    const Salt& salt = craftSalt();
+
+    return {salt, hash(toHashWithSalt, salt)};
 }
 
 } // end scrypt_utils namespace 

@@ -20,7 +20,10 @@ public:
         KO_NO_USERNAME,
         KO_NO_SERVER_QUERY,
         KO_UNKNOWN_SERVER_QUERY,
-        KO_SIGNIN_USERNAME_TAKEN
+        KO_SIGNIN_USERNAME_TAKEN,
+        KO_SIGNIN_DATABASE_ERROR,
+        KO_LOGIN_USER_NOT_FOUND,
+        KO_LOGIN_WRONG_PASSWORD
     };
 
     Status(uint32_t code);

@@ -39,3 +39,6 @@ fromLocation = .pathname >> fromString
 
 goto : Path -> Cmd msg
 goto = toString >> Nav.newUrl
+
+back : Cmd msg
+back = Nav.back 1

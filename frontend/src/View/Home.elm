@@ -1,9 +1,9 @@
 module View.Home exposing (view)
 
-import View.Skeleton as Skl exposing (skeleton)
-import Model         as Mdl exposing (Model)
-import Html          as H
+import View.Component.Skeleton as C_Skl exposing (skeleton)
+import View.Utils              as   Utl
+import Model                   as   Mdl exposing (Model)
 
-view : Model -> Skl.HMsg
+view : Model -> Utl.HMsg
 view model =
-    skeleton "Home" [H.text "Home !"]
+    skeleton model []

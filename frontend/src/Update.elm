@@ -12,15 +12,18 @@ update msg model =
         ask = \query -> Srv.send (Mdl.buildQuery model query)
 
         {-Use intermediary expression because of https://github.com/elm-lang/elm-compiler/issues/537-}
-        secret = model.secret
+        secret           = model.secret
+        is_burger_active = model.is_burger_active
     in
         case msg of
-            Msg.GotoPath    path  -> ( model                                        , Pth.goto path)
-            Msg.ChangePath  path  -> ({model | path                         = path }, Cmd.none     )
-            Msg.Username    text  -> ({model | username                     = text }, Cmd.none     )
-            Msg.Email       text  -> ({model | email                        = text }, Cmd.none     )
-            Msg.Password    text  -> ({model | secret = {secret | password  = text}}, Cmd.none     )
-            Msg.Password2   text  -> ({model | secret = {secret | password2 = text}}, Cmd.none     )
-            Msg.ServerQuery query -> ( model                                        , ask query    )
-            Msg.ServerReply reply -> ( model                                        , Cmd.none     )
-            _                     -> ( model                                        , Cmd.none     )
+            Msg.GotoPath    path  -> (  model                                            , Pth.goto path)
+            Msg.ChangePath  path  -> ({ model | path     = path                         }, Cmd.none     )
+            Msg.Username    text  -> ({ model | username = text                         }, Cmd.none     )
+            Msg.Email       text  -> ({ model | email    = text                         }, Cmd.none     )
+            Msg.Password    text  -> ({ model | secret   = {secret | password  = text}  }, Cmd.none     )
+            Msg.Password2   text  -> ({ model | secret   = {secret | password2 = text}  }, Cmd.none     )
+            Msg.ServerQuery query -> (  model                                            , ask query    )
+            Msg.ServerReply reply -> (  model                                            , Cmd.none     )
+            Msg.Back              -> (  model                                            , Pth.back     )
+            Msg.ClickBurger       -> ({ model | is_burger_active = not is_burger_active }, Cmd.none     )
+            _                     -> (  model                                            , Cmd.none     )

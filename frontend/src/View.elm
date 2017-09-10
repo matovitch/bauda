@@ -5,10 +5,10 @@ import View.NotFound as NotFound
 import View.Signin   as Signin
 import View.Login    as Login
 import View.Home     as Home
-import View.Skeleton as Skt
+import View.Utils    as Utl
 import Path          as Pth
 
-view : Model -> Skt.HMsg
+view : Model -> Utl.HMsg
 view model =
     case model.path of
         Pth.Home   ->     Home.view model

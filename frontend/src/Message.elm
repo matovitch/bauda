@@ -13,6 +13,8 @@ type Message =
     Email           String |
     ServerQuery     Query  |
     ServerReply     String |
+    Back                   |
+    ClickBurger            |
     Nothing
 
 fromPath : Nav.Location -> Message

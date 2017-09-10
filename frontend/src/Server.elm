@@ -6,8 +6,8 @@ import Model     as Mdl
 import Config    as Cfg
 
 listen : Mdl.Model -> Sub Message
-listen =
-    \m -> WSk.listen Cfg.server Msg.ServerReply
+listen model =
+    WSk.listen Cfg.server Msg.ServerReply
 
 send : String -> Cmd Message
 send = 

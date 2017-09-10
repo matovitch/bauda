@@ -24,11 +24,21 @@ type ReleaseMode = Public | Private
 
 type alias Model =
     {
-        path         : Path,
-        username     : String,
-        email        : String,
-        server_reply : String,
-        secret       : Secret
+        path             : Path,
+        username         : String,
+        email            : String,
+        server_reply     : String,
+        secret           : Secret,
+        is_burger_active : Bool
+    }
+
+type alias Root =
+    {
+        path             : String,
+        username         : String,
+        email            : String,
+        server_reply     : String,
+        is_burger_active : Bool
     }
 
 default = 
@@ -41,7 +51,8 @@ default =
             {
                 password  = "",
                 password2 = ""
-            } 
+            },
+        is_burger_active = False
     }
 
 {- LOCAL STORAGE -}
@@ -77,11 +88,25 @@ secretToJson secret =
         ]
 
 
-secretFromJson : JsD.Decoder Secret
-secretFromJson =
+secretDecoder : JsD.Decoder Secret
+secretDecoder =
     JsD.map2 Secret
         (JsD.field "password" JsD.string)
         (JsD.field "password" JsD.string)
+
+rootDecoder : JsD.Decoder Root
+rootDecoder =
+    let
+        decoderBool   = JsD.dict (JsD.maybe JsD.bool  )
+        decoderString = JsD.dict (JsD.maybe JsD.string)
+    in
+        JsD.map5 Root
+            (JsD.field "path"             JsD.string)
+            (JsD.field "username"         JsD.string)
+            (JsD.field "email"            JsD.string)
+            (JsD.field "server_reply"     JsD.string)
+            (JsD.field "is_burger_active" JsD.bool  )
+            
 
 toJson : ReleaseMode -> Model -> JsE.Value
 toJson releaseMode model =
@@ -90,41 +115,36 @@ toJson releaseMode model =
             case releaseMode of
                 Private -> secretToJson model.secret
                 Public -> JsE.object []
-
     in
         JsE.object
             [   
-                ("path"          , JsE.string (Pth.toString model.path)),
-                ("username"      , JsE.string model.username           ),
-                ("email"         , JsE.string model.email              ),
-                ("server_reply"  , JsE.string model.server_reply       ),
-                ("secret"        , secret                              )
+                ("path"            , JsE.string (Pth.toString model.path)),
+                ("username"        , JsE.string model.username           ),
+                ("email"           , JsE.string model.email              ),
+                ("server_reply"    , JsE.string model.server_reply       ),
+                ("secret"          , secret                              ),
+                ("is_burger_active", JsE.bool model.is_burger_active     )
             ]
 
 fromJson : JsD.Value -> Model
 fromJson json =
     let
-        decoderRoot   = JsD.dict (JsD.maybe JsD.string)
-        decoderSecret = JsD.at ["secret"] secretFromJson
-        decodedRoot   = JsD.decodeValue decoderRoot   json
-        decodedSecret = JsD.decodeValue decoderSecret json
+        decoderSecret = JsD.at ["secret"] secretDecoder
+        decodedRoot   = JsD.decodeValue rootDecoder   json
+        decodedSecret = JsD.decodeValue secretDecoder json
     in
         case decodedRoot of
             Ok root ->
-                let
-                    getRoot = \s -> root |> Dct.get s
-                                         |> Myb.withDefault Myb.Nothing
-                                         |> Myb.withDefault ""
-                in
-                    case decodedSecret of
-                        Ok secret ->
-                            Model
-                                (Pth.fromString (getRoot "path"))
-                                (getRoot "username")
-                                (getRoot "email")
-                                (getRoot "server_reply")
-                                secret
-                        _ -> default
+                case decodedSecret of
+                    Ok secret ->
+                        Model
+                            (Pth.fromString (root.path))
+                            (root.username)
+                            (root.email)
+                            (root.server_reply)
+                            secret
+                            (root.is_burger_active)
+                    _ -> default
             _ -> default
 
 buildQuery : Model -> Query -> String

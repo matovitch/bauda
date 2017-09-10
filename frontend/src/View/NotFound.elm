@@ -1,11 +1,12 @@
 module View.NotFound exposing (view)
 
-import View.Component.Skeleton as C_Skl exposing (skeleton)
-import View.Utils              as   Utl
-import Model                   as   Mdl exposing (Model)
+import View.Common.Skeleton as Cmn_Skl exposing (skeleton)
 
-import Html            as H
+import Message as Msg exposing (Message)
+import Model   as Mdl exposing (Model  )
 
-view : Model -> Utl.HMsg
+import Html as H exposing (Html)
+
+view : Model -> Html Message
 view model =
     skeleton model [ H.text "Not Found !" ]

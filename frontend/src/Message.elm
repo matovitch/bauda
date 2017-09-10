@@ -13,7 +13,7 @@ type Message =
     Email           String |
     ServerQuery     Query  |
     ServerReply     String |
-    Back                   |
+    Back            Int    |
     ClickBurger            |
     Nothing
 

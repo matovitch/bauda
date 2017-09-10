@@ -1,16 +1,14 @@
-module View.Component.Header exposing (header)
+module View.Common.Skeleton exposing (skeleton)
 
-import View.Utils                as Utl
+import Message as Msg exposing (Message)
+import Model   as Mdl exposing (Model  )
+import Path    as Pth exposing (Path   )
 
+import Html            as H  exposing (Html)
 import Html.Attributes as HA
 import Html.Events     as HE
-import Html            as H
 
-import Message         as Msg exposing (Message)
-import Model           as Mdl exposing (Model)
-import Path            as Pth
-
-brand : Model -> Utl.HMsg
+brand : Model -> Html Message
 brand model =
     H.h1 
         [ 
@@ -19,7 +17,7 @@ brand model =
         ]
         [ H.text   "Bauda" ]
 
-logButtons : Model -> Utl.HMsg
+logButtons : Model -> Html Message
 logButtons model =
     H.div 
         [ HA.class "field is-grouped is-grouped-right" ]
@@ -45,7 +43,7 @@ logButtons model =
         ]
 
 
-header : Model -> Utl.HMsg
+header : Model -> Html Message
 header model =
     let
         isBurgerActiveAsString =
@@ -97,3 +95,48 @@ header model =
                     ],
                 H.hr [ HA.style [ ("margin", "0") ] ] []
             ]
+
+footer : Model -> Html Message
+footer model =
+        H.div 
+            [ HA.class "container" ]
+            [ H.div
+                [ HA.class "content has-text-centered" ]
+                [ 
+                    H.hr [ HA.style [ ("margin", "0") ] ] [],
+                    H.p 
+                        []
+                        [ 
+                            H.text "This page is ", 
+                            H.b 
+                                [] 
+                                [ H.text "open source" ],
+                            H.text ". Noticed a typo? Or something unclear? ",
+                            H.a 
+                                [ HA.href "https://github.com/matovitch/bauda" ] 
+                                [ H.text "Improve this page on Github." ]
+                        ]
+                ]
+            ]
+
+skeleton : Model -> List (Html Message) -> Html Message
+skeleton model listHtmlMessages =
+    H.div []
+    [
+        H.section
+            [ HA.class "hero is-fullheight" ]
+            [
+                H.div 
+                    [ HA.class "hero-head" ]
+                    [ header model ],
+                H.div 
+                    [ HA.class "hero-body" ]
+                    [ H.div 
+                        [ HA.class "container" ]
+                        listHtmlMessages
+                    ],
+                H.div 
+                    [ HA.class "hero-footer" ]
+                    [ footer model ]
+            ]
+    ]

@@ -1,16 +1,14 @@
 module View.LogOrSign.Password exposing (password)
 
-import View.Utils as Utl
-
-import Html.Attributes as HA
-import Html.Events     as HE
-import Html            as H
-
 import Message as Msg exposing (Message)
 import Model   as Mdl exposing (Model  )
 import Path    as Pth
 
-password : Model -> List Utl.HMsg
+import Html            as H  exposing (Html)
+import Html.Attributes as HA
+import Html.Events     as HE
+
+password : Model -> List (Html Message)
 password model =
     [
         H.label 

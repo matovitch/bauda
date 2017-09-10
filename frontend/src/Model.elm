@@ -1,18 +1,16 @@
 port module Model exposing (Model, init, store, toJson, fromJson, buildQuery)
 
-import Message     as Msg exposing (Message)
-import Query       as Qry exposing (Query)
-import Path        as Pth exposing (Path)
+import Message as Msg exposing (Message)
+import Query   as Qry exposing (Query  )
+import Path    as Pth exposing (Path   )
+import Config  as Cfg
+
 import Dict        as Dct exposing (Dict)
 import Json.Encode as JsE
 import Json.Decode as JsD
 import Navigation  as Nav
 import WebSocket   as WSk
-import Config      as Cfg
 import Maybe       as Myb
-
-
-{- TYPES AND CONSTANTS -}
 
 type alias Secret = 
     {
@@ -55,15 +53,11 @@ default =
         is_burger_active = False
     }
 
-{- LOCAL STORAGE -}
-
 port setStorage : JsD.Value -> Cmd msg
 
 store : (Model, Cmd Message) -> (Model, Cmd Message)
 store (model, cmd) = 
     (model, Cmd.batch [setStorage (toJson Public model), cmd])
-
-{- INIT -}
 
 changePath : Path -> Model -> (Model, Cmd Message)
 changePath path model =
@@ -76,8 +70,6 @@ init flag location =
             changePath (Pth.fromLocation location) (fromJson json)
         Nothing ->
             changePath (Pth.fromLocation location) default
-
-{- JSON ENCODING / DECODING -}
 
 secretToJson : Secret -> JsE.Value
 secretToJson secret =
@@ -139,11 +131,11 @@ fromJson json =
                     Ok secret ->
                         Model
                             (Pth.fromString (root.path))
-                            (root.username)
-                            (root.email)
-                            (root.server_reply)
-                            secret
-                            (root.is_burger_active)
+                            (root.username             )
+                            (root.email                )
+                            (root.server_reply         )
+                            (secret                    )
+                            (root.is_burger_active     )
                     _ -> default
             _ -> default
 

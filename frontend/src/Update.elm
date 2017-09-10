@@ -1,9 +1,9 @@
 module Update exposing (update)
 
 import Message as Msg exposing (Message)
-import Query   as Qry exposing (Query)
-import Model   as Mdl exposing (Model)
-import Path    as Pth exposing (Path)
+import Query   as Qry exposing (Query  )
+import Model   as Mdl exposing (Model  )
+import Path    as Pth exposing (Path   )
 import Server  as Srv
 
 update : Message -> Model -> (Model, Cmd Message)

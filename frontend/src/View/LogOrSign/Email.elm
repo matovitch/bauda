@@ -1,11 +1,11 @@
 module View.LogOrSign.Email exposing (email)
 
+import Message as Msg exposing (Message)
+import Model   as Mdl exposing (Model  )
+
 import Html            as H  exposing (Html)
 import Html.Attributes as HA
 import Html.Events     as HE
-
-import Message as Msg exposing (Message)
-import Model   as Mdl exposing (Model  )
 
 email : Model -> List (Html Message)
 email model =

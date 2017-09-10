@@ -1,17 +1,15 @@
 module View.ForgotPassword exposing (view)
 
 import View.Common.Skeleton  as Cmn_Skl exposing (skeleton)
-import View.Common.Delete as Cmn_Dlt exposing (delete)
-
-import View.Utils as   Utl
+import View.Common.Delete    as Cmn_Dlt exposing (delete  )
 
 import Message as Msg exposing (Message)
-import Model   as Mdl exposing (Model)
+import Model   as Mdl exposing (Model  )
 
+import Html            as H  exposing (Html)
 import Html.Attributes as HA
-import Html            as H
 
-view : Model -> Utl.HMsg
+view : Model -> Html Message
 view model =
     skeleton 
         model 

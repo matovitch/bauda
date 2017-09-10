@@ -2,14 +2,14 @@ module View.LogOrSign.Buttons exposing (buttons)
 
 import View.LogOrSign.Utils as Utl
 
+import Message as Msg exposing (Message)
+import Model   as Mdl exposing (Model  )
+import Query   as Qry exposing (Query  )
+import Path    as Pth
+
 import Html            as H  exposing (Html)
 import Html.Attributes as HA
 import Html.Events     as HE
-
-import Message as Msg exposing (Message)
-import Model   as Mdl exposing (Model)
-import Query   as Qry exposing (Query)
-import Path    as Pth
 
 import String as Str
 

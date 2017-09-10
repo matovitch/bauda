@@ -1,7 +1,8 @@
 module Message exposing (..)
 
 import Query      as Qry exposing (Query)
-import Path       as Pth exposing (Path)
+import Path       as Pth exposing (Path )
+
 import Navigation as Nav
 
 type Message = 

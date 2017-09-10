@@ -6,7 +6,7 @@ import View.LogOrSign.Utils   as Utl
 import View.Common.Delete as Cmn_Dlt exposing (delete)
 
 import Message as Msg exposing (Message)
-import Model   as Mdl exposing (Model)
+import Model   as Mdl exposing (Model  )
 
 import Html            as H  exposing (Html)
 import Html.Attributes as HA

@@ -7,7 +7,7 @@ import View.LogOrSign.Popup    as LoS_Ppu exposing (popup   )
 import View.Common.Skeleton as Cmn_Skl exposing (skeleton)
 
 import Message as Msg exposing (Message)
-import Model   as Mdl exposing (Model)
+import Model   as Mdl exposing (Model  )
 
 import Html as H exposing (Html)
 

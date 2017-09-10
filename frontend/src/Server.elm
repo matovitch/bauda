@@ -1,11 +1,12 @@
-module Server exposing (..)
+module Server exposing (send, listen)
 
-import Message   as Msg exposing (Message)
+import Message as Msg exposing (Message)
+import Model   as Mdl exposing (Model  )
+import Config  as Cfg
+
 import WebSocket as WSk
-import Model     as Mdl
-import Config    as Cfg
 
-listen : Mdl.Model -> Sub Message
+listen : Model -> Sub Message
 listen model =
     WSk.listen Cfg.server Msg.ServerReply
 

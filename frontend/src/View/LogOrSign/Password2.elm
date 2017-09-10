@@ -1,17 +1,16 @@
 module View.LogOrSign.Password2 exposing (password2)
 
-import Html            as H  exposing (Html)
-import Html.Attributes as HA
-import Html.Events     as HE
-
 import View.LogOrSign.Utils as Utl
 
 import Message as Msg exposing (Message)
 import Model   as Mdl exposing (Model  )
 import Config  as Cfg
 
+import Html            as H  exposing (Html)
+import Html.Attributes as HA
+import Html.Events     as HE
+
 import String as Str
-import Tuple  as Tpl
 
 type alias Annotations = 
     {
@@ -19,7 +18,6 @@ type alias Annotations =
         color  : String,
         helper : String
     }
-
 
 password2 : Model -> List (Html Message)
 password2 model =

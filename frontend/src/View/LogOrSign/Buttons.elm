@@ -12,6 +12,7 @@ import Html.Attributes as HA
 import Html.Events     as HE
 
 import String as Str
+import Regex  as Rgx
 
 cancel : Html Message
 cancel =
@@ -41,11 +42,28 @@ button model =
                 Pth.SignIn -> [ HE.onClick (Msg.ServerQuery Qry.SignIn) ]
                 Pth.LogIn  -> [ HE.onClick (Msg.ServerQuery Qry.LogIn ) ]
                 _          -> []
+
         isEnabled =
-              model.path == Pth.LogIn ||
-            ( model.path == Pth.SignIn && Utl.isPasswordValid model )
+                ( 
+                    model.path == Pth.LogIn &&
+                    not (Str.isEmpty model.secret.password)
+                ) 
+            ||
+                (
+                    model.path == Pth.SignIn  &&
+                    Utl.isPasswordValid model &&
+                    Utl.isEmailValid    model
+                )
+            && 
+                not (Str.isEmpty model.username)
 
-
+        title =
+            if Str.isEmpty model.username || 
+               Str.isEmpty model.secret.password
+            then
+                "Some fields are missing."
+            else
+                ""
     in
         H.p 
             [ HA.class "control" ]
@@ -53,7 +71,8 @@ button model =
                 (
                     [ 
                         HA.class "button is-primary",
-                        HA.disabled (not isEnabled)
+                        HA.disabled (not isEnabled),
+                        HA.title title
                     ] ++
                     onClick
                 )

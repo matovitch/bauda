@@ -22,56 +22,48 @@ type alias Annotations =
 password2 : Model -> List (Html Message)
 password2 model =
     let
-        annotations = 
+        annotation = 
             if Str.isEmpty model.secret.password
             then
                 {
-                    icon   = "lock",
-                    color  = "",
-                    helper = "" 
+                    icon  = "lock",
+                    color = "",
+                    help  = "" 
                 }
             else
                 if  ( Utl.arePasswordsMatching model &&
                       Utl.isPasswordLongEnough model )
                 then
                     {
-                        icon   = "check",
-                        color  = "is-success",
-                        helper = "" 
+                        icon  = "check",
+                        color = "is-success",
+                        help  = "The passwords do match!" 
                     }
                 else
                     if not (Utl.arePasswordsMatching model)
                     then
                         {
-                            icon   = "times",
-                            color  = "is-danger",
-                            helper = "The passwords do not match." 
+                            icon  = "times",
+                            color = "is-danger",
+                            help  = "The passwords do not match." 
                         }
                     else
                         if not (Utl.isPasswordLongEnough model)
                         then
                             {
-                                icon   = "times",
-                                color  = "is-danger",
-                                helper = "The password is not long enough (" ++
-                                          toString Cfg.minPasswordLength ++
-                                         " characters min.)"
+                                icon  = "times",
+                                color = "is-danger",
+                                help  = "The password is not long enough (" ++
+                                         toString Cfg.minPasswordLength ++
+                                        " characters min.)"
                             }
                         else
                             {
-                                icon   = "lock",
-                                color  = "",
-                                helper = "" 
+                                icon  = "lock",
+                                color = "",
+                                help  = "" 
                             }
-        help = 
-            if Str.isEmpty annotations.helper
-            then
-                []
-            else
-                [ H.p
-                    [ HA.class "help is-danger" ]
-                    [ H.text annotations.helper ]
-                ]
+        help = Utl.craftHelp annotation
     in
     [
         H.p 
@@ -83,7 +75,7 @@ password2 model =
                 H.input
                     [ 
                         HA.class "input",
-                        HA.class annotations.color,
+                        HA.class annotation.color,
                         HA.type_ "password",
                         HA.placeholder "password (confirmation)",
                         HE.onInput Msg.Password2,
@@ -93,7 +85,7 @@ password2 model =
                 H.span
                     [ HA.class "icon is-small is-left" ]
                     [ H.i 
-                        [ HA.class ("fa fa-" ++ annotations.icon) ]
+                        [ HA.class ("fa fa-" ++ annotation.icon) ]
                         []
                     ]
             ]

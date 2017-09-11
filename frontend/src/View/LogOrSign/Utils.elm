@@ -5,8 +5,32 @@ import Model   as Mdl exposing (Model  )
 import Path    as Pth exposing (Path   )
 import Config  as Cfg
 
-import Html   as H exposing (Html)
+import Html            as H  exposing (Html)
+import Html.Attributes as HA
+
 import String as Str
+import Regex  as Rgx
+
+type alias Annotation =
+    {
+        icon  : String,
+        color : String,
+        help  : String
+    }
+
+craftHelp : Annotation -> List (Html Message)
+craftHelp annotation =
+    if not (Str.isEmpty annotation.help)
+    then
+        [ H.p
+            [ 
+                HA.class "help",
+                HA.class annotation.color
+            ]
+            [ H.text annotation.help ]
+        ]
+    else
+        []
 
 arePasswordsMatching : Model -> Bool
 arePasswordsMatching model =
@@ -21,6 +45,13 @@ isPasswordValid : Model -> Bool
 isPasswordValid model =
     arePasswordsMatching model &&
     isPasswordLongEnough model
+
+isEmailValid : Model -> Bool
+isEmailValid model =
+    let
+        emailRegex = Rgx.regex Cfg.emailRegex
+    in
+        Rgx.contains emailRegex model.email
 
 logOrSign : Model -> Html Message
 logOrSign model =

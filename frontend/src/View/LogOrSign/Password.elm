@@ -43,7 +43,7 @@ password model =
                         HA.class "help",
                         HE.onClick (Msg.GotoPath Pth.ForgotPassword)
                     ]
-                    [ H.text "I forgot my password." ]
+                    [ H.text "password reset" ]
                 ]
             _ -> 
                 []

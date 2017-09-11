@@ -1,6 +1,6 @@
 module View exposing (view)
 
-import View.ForgotPassword as ForgotPassword
+import View.PasswordReset  as PasswordReset
 import View.NotFound       as NotFound
 import View.Signin         as Signin
 import View.Login          as Login
@@ -15,8 +15,8 @@ import Html as H exposing (Html)
 view : Model -> Html Message
 view model =
     case model.path of
-        Pth.Home           ->           Home.view model
-        Pth.LogIn          ->          Login.view model
-        Pth.SignIn         ->         Signin.view model
-        Pth.ForgotPassword -> ForgotPassword.view model
-        _                  ->       NotFound.view model
+        Pth.Home          ->          Home.view model
+        Pth.LogIn         ->         Login.view model
+        Pth.SignIn        ->        Signin.view model
+        Pth.PasswordReset -> PasswordReset.view model
+        _                 ->      NotFound.view model

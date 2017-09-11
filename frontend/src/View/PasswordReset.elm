@@ -1,4 +1,4 @@
-module View.ForgotPassword exposing (view)
+module View.PasswordReset exposing (view)
 
 import View.Common.Skeleton  as Cmn_Skl exposing (skeleton)
 import View.Common.Delete    as Cmn_Dlt exposing (delete  )

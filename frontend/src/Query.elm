@@ -4,7 +4,6 @@ type Query =
     LogIn  |
     SignIn
 
-
 toString : Query -> String
 toString query =
     case query of

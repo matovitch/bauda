@@ -5,6 +5,8 @@ import Path       as Pth exposing (Path )
 
 import Navigation as Nav
 
+import Time as Tm exposing (Time)
+
 type Message = 
     GotoPath        Path   |
     ChangePath      Path   |
@@ -16,7 +18,7 @@ type Message =
     ServerReply     String |
     Back            Int    |
     ClickBurger            |
-    Nothing
+    Timeout         Time
 
 fromPath : Nav.Location -> Message
 fromPath location =

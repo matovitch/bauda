@@ -5,12 +5,12 @@ import Query   as Qry exposing (Query  )
 import Path    as Pth exposing (Path   )
 import Config  as Cfg
 
-import Dict        as Dct exposing (Dict)
+import Maybe       as Myb exposing (Maybe)
+import Dict        as Dct exposing (Dict )
 import Json.Encode as JsE
 import Json.Decode as JsD
 import Navigation  as Nav
 import WebSocket   as WSk
-import Maybe       as Myb
 
 type alias Secret = 
     {
@@ -22,35 +22,39 @@ type ReleaseMode = Public | Private
 
 type alias Model =
     {
-        path             : Path,
-        username         : String,
-        email            : String,
-        server_reply     : String,
-        secret           : Secret,
-        is_burger_active : Bool
+        path              : Path,
+        username          : String,
+        email             : String,
+        server_reply      : String,
+        is_burger_active  : Bool,
+        is_waiting_server : Bool,
+        secret            : Secret
     }
 
 type alias Root =
     {
-        path             : String,
-        username         : String,
-        email            : String,
-        server_reply     : String,
-        is_burger_active : Bool
+        path              : String,
+        username          : String,
+        email             : String,
+        server_reply      : String,
+        is_burger_active  : Bool,
+        is_waiting_server : Bool
     }
 
+default : Model
 default = 
     {
-        path         = Pth.LogIn,
-        username     = "",
-        email        = "",
-        server_reply = "",
-        secret       =
+        path              = Pth.LogIn,
+        username          = "",
+        email             = "",
+        server_reply      = "",
+        is_burger_active  = False,
+        is_waiting_server = False,
+        secret =
             {
                 password  = "",
                 password2 = ""
-            },
-        is_burger_active = False
+            }
     }
 
 port setStorage : JsD.Value -> Cmd msg
@@ -66,9 +70,9 @@ changePath path model =
 init : Maybe JsD.Value -> Nav.Location -> (Model, Cmd Message)
 init flag location = 
     case flag of 
-        Just json ->
+        Myb.Just json ->
             changePath (Pth.fromLocation location) (fromJson json)
-        Nothing ->
+        Myb.Nothing ->
             changePath (Pth.fromLocation location) default
 
 secretToJson : Secret -> JsE.Value
@@ -92,12 +96,13 @@ rootDecoder =
         decoderBool   = JsD.dict (JsD.maybe JsD.bool  )
         decoderString = JsD.dict (JsD.maybe JsD.string)
     in
-        JsD.map5 Root
-            (JsD.field "path"             JsD.string)
-            (JsD.field "username"         JsD.string)
-            (JsD.field "email"            JsD.string)
-            (JsD.field "server_reply"     JsD.string)
-            (JsD.field "is_burger_active" JsD.bool  )
+        JsD.map6 Root
+            (JsD.field "path"              JsD.string)
+            (JsD.field "username"          JsD.string)
+            (JsD.field "email"             JsD.string)
+            (JsD.field "server_reply"      JsD.string)
+            (JsD.field "is_burger_active"  JsD.bool  )
+            (JsD.field "is_waiting_server" JsD.bool  )
             
 
 toJson : ReleaseMode -> Model -> JsE.Value
@@ -110,12 +115,13 @@ toJson releaseMode model =
     in
         JsE.object
             [   
-                ("path"            , JsE.string (Pth.toString model.path)),
-                ("username"        , JsE.string model.username           ),
-                ("email"           , JsE.string model.email              ),
-                ("server_reply"    , JsE.string model.server_reply       ),
-                ("secret"          , secret                              ),
-                ("is_burger_active", JsE.bool model.is_burger_active     )
+                ("path"             , JsE.string (Pth.toString model.path)),
+                ("username"         , JsE.string model.username           ),
+                ("email"            , JsE.string model.email              ),
+                ("server_reply"     , JsE.string model.server_reply       ),
+                ("is_burger_active" , JsE.bool model.is_burger_active     ),
+                ("is_waiting_server", JsE.bool model.is_waiting_server    ),
+                ("secret"           , secret                              )
             ]
 
 fromJson : JsD.Value -> Model
@@ -134,8 +140,9 @@ fromJson json =
                             (root.username             )
                             (root.email                )
                             (root.server_reply         )
-                            (secret                    )
                             (root.is_burger_active     )
+                            (root.is_waiting_server    )
+                            (secret                    )
                     _ -> default
             _ -> default
 

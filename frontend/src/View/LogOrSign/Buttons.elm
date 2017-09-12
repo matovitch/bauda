@@ -43,6 +43,13 @@ button model =
                 Pth.LogIn  -> [ HE.onClick (Msg.ServerQuery Qry.LogIn ) ]
                 _          -> []
 
+        isLoading =
+            if model.is_waiting_server
+            then
+                [ HA.class "is-loading" ]
+            else
+                []
+
         isEnabled =
                 ( 
                     model.path == Pth.LogIn &&
@@ -73,7 +80,8 @@ button model =
                         HA.class "button is-primary",
                         HA.disabled (not isEnabled),
                         HA.title title
-                    ] ++
+                    ]         ++
+                    isLoading ++
                     onClick
                 )
                 [

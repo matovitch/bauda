@@ -48,22 +48,25 @@ password2 model =
                             help  = "The passwords do not match." 
                         }
                     else
-                        if not (Utl.isPasswordLongEnough model)
-                        then
-                            {
-                                icon  = "times",
-                                color = "is-danger",
-                                help  = "The password is not long enough (" ++
-                                         toString Cfg.minPasswordLength ++
-                                        " characters min.)"
-                            }
-                        else
-                            {
-                                icon  = "lock",
-                                color = "",
-                                help  = "" 
-                            }
-        help = Utl.craftHelp annotation
+                        {
+                            icon  = "times",
+                            color = "is-danger",
+                            help  = "The password is not long enough (" ++
+                                     toString Cfg.minPasswordLength ++
+                                    " characters min.)"
+                        }
+        help =
+            if not (Str.isEmpty annotation.help)
+            then
+                [ H.p
+                    [
+                        HA.class "help",
+                        HA.class annotation.color
+                    ]
+                    [ H.text annotation.help ]
+                ]
+            else
+                []
     in
     [
         H.p 

@@ -11,27 +11,6 @@ import Html.Attributes as HA
 import String as Str
 import Regex  as Rgx
 
-type alias Annotation =
-    {
-        icon  : String,
-        color : String,
-        help  : String
-    }
-
-craftHelp : Annotation -> List (Html Message)
-craftHelp annotation =
-    if not (Str.isEmpty annotation.help)
-    then
-        [ H.p
-            [ 
-                HA.class "help",
-                HA.class annotation.color
-            ]
-            [ H.text annotation.help ]
-        ]
-    else
-        []
-
 arePasswordsMatching : Model -> Bool
 arePasswordsMatching model =
     model.secret.password ==
@@ -53,12 +32,9 @@ isEmailValid model =
     in
         Rgx.contains emailRegex model.email
 
-logOrSign : Model -> Html Message
+logOrSign : Model -> String
 logOrSign model =
-    H.text
-        (
-            case model.path of
-                Pth.SignIn -> "Sign in"
-                Pth.LogIn  -> "Log in"
-                _          -> ""
-        )
+    case model.path of
+        Pth.SignIn -> "Sign in"
+        Pth.LogIn  -> "Log in"
+        _          -> ""

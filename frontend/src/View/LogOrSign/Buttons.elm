@@ -91,7 +91,7 @@ button model =
                             [ HA.class "fa fa-sign-in" ]
                             []
                         ],
-                    H.p [] [ Utl.logOrSign model ]
+                    H.p [] [ H.text (Utl.logOrSign model) ]
                 ]
                  
             ]

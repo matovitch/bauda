@@ -37,7 +37,18 @@ email model =
                         help  = "This email address is not valid."
                     }
 
-        help = Utl.craftHelp annotation
+        help =
+            if not (Str.isEmpty annotation.help)
+            then
+                [ H.p
+                    [
+                        HA.class "help",
+                        HA.class annotation.color
+                    ]
+                    [ H.text annotation.help ]
+                ]
+            else
+                []
     in
             
     [

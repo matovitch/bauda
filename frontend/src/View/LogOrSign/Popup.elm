@@ -27,8 +27,8 @@ popup model controls =
                         [ HA.class "modal-card-head" ]
                         [ 
                             H.p
-                                [ HA.class "modal-card-title" ]
-                                [ Utl.logOrSign model ],
+                                [ HA.class "modal-card-title"  ]
+                                [ H.text (Utl.logOrSign model) ],
                             delete (Msg.Back 1)
                         ],
                     H.section

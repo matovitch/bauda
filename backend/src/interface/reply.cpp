@@ -50,7 +50,7 @@ const nlohmann::json serverReply(const std::string& serverQuery,
     if (!username)
     {
         MY_LOG_WARN(logger::get(Config::get()["log"]["main_logger"]),
-                 "No username found in model. Replying an error.");
+                    "No username found in model. Replying an error.");
 
         return buildServerReplyAsJson(Status::KO_NO_USERNAME, mainLogger);
     }

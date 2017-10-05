@@ -19,8 +19,8 @@ namespace json_utils
 
     template <typename KindPredicate>
     const boost::optional<const nlohmann::json&> getFrom(const nlohmann::json& json,
-                                                        const std::string& key, 
-                                                        KindPredicate kindPredicate)
+                                                         const std::string& key, 
+                                                         KindPredicate kindPredicate)
     {
         return (json.find(key) != json.end() && kindPredicate(json[key])) 
             ? boost::optional<const nlohmann::json&>{json[key]}

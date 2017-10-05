@@ -1,2 +1,7 @@
-backend/draft
-frontend/src/elm-stuff
+backend/.tup/
+backend/data/
+backend/draft/
+backend/capnp/gen/
+backend/build-debug/
+frontend/elm-stuff/
+frontend/elm.js

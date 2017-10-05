@@ -33,6 +33,7 @@ LDFLAGS += -l c
 LDFLAGS += -l pthread
 LDFLAGS += -l boost_filesystem
 LDFLAGS += -l boost_system
+LDFLAGS += -l ssl
 
 !cc = |> $(CC) $(CCFLAGS) -c %f -o %o |> %B.o
 !cx = |> $(CX) $(CXFLAGS) -c %f -o %o |> %B.o
